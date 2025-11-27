@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Mail, Phone, MonitorPlay } from 'lucide-react';
+import { Play, Mail, Phone, Tv } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -45,7 +45,7 @@ const DemoShowcase: React.FC = () => {
         {/* Header */}
         <div className="mb-8 text-center">
             <div className="flex items-center justify-center gap-2 text-electricBlue mb-2">
-                <MonitorPlay className="w-5 h-5 animate-pulse" />
+                <Tv className="w-5 h-5 animate-pulse" />
                 <span className="font-mono text-sm tracking-widest uppercase font-bold">Live Demo Showcase</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">眼见为实 <span className="text-gray-500">Realtime</span></h2>
