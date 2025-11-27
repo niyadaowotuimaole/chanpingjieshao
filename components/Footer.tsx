@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Mail, Phone, Building, User, CheckCircle2, ChevronDown, AlertCircle, Loader2, Lock, Download, Trash2, X, Table, Copy, Check } from 'lucide-react';
+import { Send, Mail, Phone, Building, User, CheckCircle2, ChevronDown, AlertCircle, Loader2, Lock, Download, Trash2, X, Table, Copy, Check, Briefcase, Wallet, Clock, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Footer: React.FC = () => {
@@ -89,15 +89,10 @@ const Footer: React.FC = () => {
     setIsSubmitting(true);
 
     // --- REAL DATA HANDLING START ---
-    // In a real production app, you would replace the code below with a fetch() call to your backend.
-    // Example:
-    // await fetch('/api/submit-lead', { method: 'POST', body: JSON.stringify(formData) });
-    
-    // For this demo, we save to LocalStorage so you can view it in the Admin Panel
     setTimeout(() => {
         const newLead = {
             id: Date.now(),
-            timestamp: new Date().toLocaleString(),
+            timestamp: new Date().toLocaleString('zh-CN'), // Use Chinese locale time
             ...formData
         };
         
@@ -175,27 +170,27 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Right Form Area */}
-            <div className="w-full md:w-7/12 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 md:p-8 max-h-[80vh] overflow-y-auto scrollbar-hide shadow-2xl">
+            <div className="w-full md:w-7/12 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 md:p-8 max-h-[80vh] overflow-y-auto scrollbar-hide shadow-2xl relative z-20">
                 {!submitted ? (
-                    <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 text-left">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                              {/* Name */}
                             <div className="space-y-1">
-                                <label className="text-xs text-gray-400 ml-1">姓名 <span className="text-red-500">*</span></label>
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">姓名 <span className="text-red-500">*</span></label>
                                 <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                     <input 
                                         type="text" 
                                         name="name"
                                         value={formData.name}
                                         onChange={handleInputChange}
                                         onBlur={handleBlur}
-                                        placeholder="怎么称呼您？"
-                                        className={`w-full bg-black/20 rounded-xl pl-4 pr-10 py-3 text-sm text-white placeholder-gray-600 border focus:outline-none transition-all ${getBorderColor(getFieldStatus('name'))}`}
+                                        placeholder="您的称呼"
+                                        className={`w-full bg-darkBg/50 border rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-600 focus:outline-none transition-all ${getBorderColor(getFieldStatus('name'))}`}
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                         {getFieldStatus('name') === 'error' && <AlertCircle className="w-4 h-4 text-red-500" />}
                                         {getFieldStatus('name') === 'success' && <CheckCircle2 className="w-4 h-4 text-green-500" />}
-                                        {getFieldStatus('name') === 'default' && <User className="w-4 h-4 text-gray-600" />}
                                     </div>
                                 </div>
                                 {errors.name && <p className="text-[10px] text-red-500 ml-1">{errors.name}</p>}
@@ -203,21 +198,21 @@ const Footer: React.FC = () => {
 
                              {/* Phone */}
                             <div className="space-y-1">
-                                <label className="text-xs text-gray-400 ml-1">电话 <span className="text-red-500">*</span></label>
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">联系电话 <span className="text-red-500">*</span></label>
                                 <div className="relative">
+                                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                     <input 
                                         type="tel" 
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleInputChange}
                                         onBlur={handleBlur}
-                                        placeholder="您的联系方式"
-                                        className={`w-full bg-black/20 rounded-xl pl-4 pr-10 py-3 text-sm text-white placeholder-gray-600 border focus:outline-none transition-all ${getBorderColor(getFieldStatus('phone'))}`}
+                                        placeholder="手机号码"
+                                        className={`w-full bg-darkBg/50 border rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-600 focus:outline-none transition-all ${getBorderColor(getFieldStatus('phone'))}`}
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                         {getFieldStatus('phone') === 'error' && <AlertCircle className="w-4 h-4 text-red-500" />}
                                         {getFieldStatus('phone') === 'success' && <CheckCircle2 className="w-4 h-4 text-green-500" />}
-                                        {getFieldStatus('phone') === 'default' && <Phone className="w-4 h-4 text-gray-600" />}
                                     </div>
                                 </div>
                                 {errors.phone && <p className="text-[10px] text-red-500 ml-1">{errors.phone}</p>}
@@ -227,39 +222,37 @@ const Footer: React.FC = () => {
                         {/* Company & Industry */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                             <div className="space-y-1">
-                                <label className="text-xs text-gray-400 ml-1">公司 <span className="text-gray-600">(选填)</span></label>
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">企业名称 <span className="text-gray-600 font-normal">(选填)</span></label>
                                 <div className="relative">
+                                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                     <input 
                                         type="text" 
                                         name="company"
                                         value={formData.company}
                                         onChange={handleInputChange}
                                         onBlur={handleBlur}
-                                        placeholder="所在企业名称"
-                                        className={`w-full bg-black/20 rounded-xl pl-4 pr-10 py-3 text-sm text-white placeholder-gray-600 border focus:outline-none transition-all ${getBorderColor(getFieldStatus('company'))}`}
+                                        placeholder="公司名称"
+                                        className={`w-full bg-darkBg/50 border rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-600 focus:outline-none transition-all ${getBorderColor(getFieldStatus('company'))}`}
                                     />
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                        <Building className="w-4 h-4 text-gray-600" />
-                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs text-gray-400 ml-1">行业 <span className="text-gray-600">(选填)</span></label>
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">所属行业 <span className="text-gray-600 font-normal">(选填)</span></label>
                                 <div className="relative">
                                     <select 
                                         name="industry"
                                         value={formData.industry}
                                         onChange={handleInputChange}
-                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                        className="w-full bg-darkBg/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
                                     >
                                         <option value="" disabled>选择行业...</option>
                                         <option value="ecommerce">电商直播</option>
                                         <option value="tourism">文旅宣传</option>
                                         <option value="education">教育培训</option>
                                         <option value="government">政务服务</option>
-                                        <option value="other">其他</option>
+                                        <option value="other">其他行业</option>
                                     </select>
-                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                 </div>
                             </div>
                         </div>
@@ -267,24 +260,28 @@ const Footer: React.FC = () => {
                          {/* Job Title & Budget */}
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                             <div className="space-y-1">
-                                <label className="text-xs text-gray-400 ml-1">职位 <span className="text-gray-600">(选填)</span></label>
-                                <input 
-                                    type="text" 
-                                    name="jobTitle"
-                                    value={formData.jobTitle}
-                                    onChange={handleInputChange}
-                                    placeholder="您的职位"
-                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none transition-all"
-                                />
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">职位 <span className="text-gray-600 font-normal">(选填)</span></label>
+                                <div className="relative">
+                                    <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                    <input 
+                                        type="text" 
+                                        name="jobTitle"
+                                        value={formData.jobTitle}
+                                        onChange={handleInputChange}
+                                        placeholder="您的职位"
+                                        className="w-full bg-darkBg/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none transition-all"
+                                    />
+                                </div>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs text-gray-400 ml-1">预算 <span className="text-gray-600">(选填)</span></label>
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">预算范围 <span className="text-gray-600 font-normal">(选填)</span></label>
                                 <div className="relative">
+                                    <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                     <select 
                                         name="budget"
                                         value={formData.budget}
                                         onChange={handleInputChange}
-                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                        className="w-full bg-darkBg/50 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
                                     >
                                         <option value="" disabled>选择预算...</option>
                                         <option value="<5w">5万以内</option>
@@ -292,16 +289,37 @@ const Footer: React.FC = () => {
                                         <option value="20-50w">20-50万</option>
                                         <option value=">50w">50万以上</option>
                                     </select>
-                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Timeline */}
+                        <div className="space-y-1">
+                            <label className="text-xs font-mono text-gray-500 uppercase ml-1">预计启动时间</label>
+                            <div className="relative">
+                                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <select 
+                                    name="timeline"
+                                    value={formData.timeline}
+                                    onChange={handleInputChange}
+                                    className="w-full bg-darkBg/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                >
+                                    <option value="" disabled>选择时间...</option>
+                                    <option value="1week">一周内</option>
+                                    <option value="1month">一月内</option>
+                                    <option value="3months">三月内</option>
+                                    <option value="research">仅调研</option>
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                             </div>
                         </div>
 
                         {/* Type Selection */}
                         <div className="space-y-1">
-                            <label className="text-xs text-gray-400 ml-1">咨询类型</label>
+                            <label className="text-xs font-mono text-gray-500 uppercase ml-1">咨询类型</label>
                             <div className="flex gap-2">
-                                {['企业定制 (B2B)', '个人 IP (B2C)', '渠道代理'].map((type) => (
+                                {['企业定制 (B2B)', '个人 IP (B2C)', '代理加盟'].map((type) => (
                                     <button
                                         key={type}
                                         type="button"
@@ -309,7 +327,7 @@ const Footer: React.FC = () => {
                                         className={`flex-1 py-2 rounded-lg text-xs md:text-sm border transition-all ${
                                             formData.type === type 
                                             ? 'bg-electricBlue/20 border-electricBlue text-electricBlue font-bold' 
-                                            : 'bg-black/20 border-white/5 text-gray-500 hover:bg-white/5'
+                                            : 'bg-darkBg/30 border-white/5 text-gray-500 hover:bg-white/5'
                                         }`}
                                     >
                                         {type}
@@ -320,16 +338,17 @@ const Footer: React.FC = () => {
 
                          {/* Description */}
                         <div className="space-y-1">
-                            <label className="text-xs text-gray-400 ml-1">需求描述</label>
+                            <label className="text-xs font-mono text-gray-500 uppercase ml-1">需求描述</label>
                             <div className="relative">
+                                <FileText className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
                                 <textarea 
                                     name="description"
                                     value={formData.description}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
                                     rows={2}
-                                    placeholder="简单描述您的应用场景或需求..."
-                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none transition-all resize-none"
+                                    placeholder="请简述您的具体需求或应用场景..."
+                                    className="w-full bg-darkBg/50 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none transition-all resize-none"
                                 />
                             </div>
                         </div>
@@ -337,12 +356,12 @@ const Footer: React.FC = () => {
                         <button 
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full py-4 bg-gradient-to-r from-electricBlue to-blue-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(41,121,255,0.3)] hover:shadow-[0_0_30px_rgba(41,121,255,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full py-4 bg-gradient-to-r from-electricBlue to-blue-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(41,121,255,0.3)] hover:shadow-[0_0_30px_rgba(41,121,255,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
                         >
                             {isSubmitting ? (
                                 <><Loader2 className="w-5 h-5 animate-spin" /> 提交中...</>
                             ) : (
-                                <><Send className="w-5 h-5" /> 立即预约咨询</>
+                                <><Send className="w-5 h-5" /> 提交预约申请</>
                             )}
                         </button>
                     </form>
@@ -358,7 +377,7 @@ const Footer: React.FC = () => {
                         <div>
                             <h3 className="text-2xl font-bold text-white mb-2">提交成功</h3>
                             <p className="text-gray-400 max-w-xs mx-auto text-sm">
-                                感谢您的信任。数据已录入后台系统，解决方案专家将在 24 小时内与您取得联系。
+                                感谢您的信任。数据已录入后台系统，解决方案专家将在 24 小时内与您取得联系 ({formData.phone})。
                             </p>
                         </div>
                         <button 
@@ -373,12 +392,12 @@ const Footer: React.FC = () => {
         </div>
         
         {/* Footer Bottom Line */}
-        <div className="absolute bottom-4 w-full flex justify-center items-center gap-2 text-[10px] text-gray-700">
-             © 2024 Gansu AI Digital Human Solution. All Rights Reserved.
+        <div className="absolute bottom-2 left-0 right-0 z-50 flex justify-center items-center gap-2 pb-2">
+             <span className="text-[10px] text-gray-700">© 2024 Gansu AI Solution.</span>
              <button 
                 onClick={() => setShowAdmin(true)} 
-                className="opacity-20 hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-white"
-                title="Admin Access"
+                className="opacity-50 hover:opacity-100 transition-opacity p-2 text-gray-500 hover:text-white"
+                title="管理后台"
              >
                  <Lock className="w-3 h-3" />
              </button>
@@ -389,6 +408,26 @@ const Footer: React.FC = () => {
     </section>
   );
 };
+
+// --- Value Mappings for Chinese Display ---
+const VALUE_MAP: Record<string, string> = {
+    'ecommerce': '电商直播',
+    'tourism': '文旅宣传',
+    'education': '教育培训',
+    'government': '政务服务',
+    'other': '其他行业',
+    '<5w': '5万以内',
+    '5-20w': '5-20万',
+    '20-50w': '20-50万',
+    '>50w': '50万以上',
+    '1week': '一周内',
+    '1month': '一月内',
+    '3months': '三月内',
+    'research': '仅调研',
+    'default': '-'
+};
+
+const getLabel = (val: string) => VALUE_MAP[val] || val || '-';
 
 // --- Admin Panel Component ---
 
@@ -407,7 +446,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
         if (leads.length === 0) return;
         
         // CSV Header
-        const headers = ["ID", "Time", "Name", "Phone", "Company", "Job", "Industry", "Budget", "Type", "Description"];
+        const headers = ["ID", "提交时间", "姓名", "电话", "公司", "职位", "行业", "预算", "启动时间", "类型", "需求描述"];
         
         // CSV Rows
         const rows = leads.map(lead => [
@@ -417,10 +456,11 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
             `"${lead.phone}"`,
             `"${lead.company || ''}"`,
             `"${lead.jobTitle || ''}"`,
-            `"${lead.industry || ''}"`,
-            `"${lead.budget || ''}"`,
+            `"${getLabel(lead.industry)}"`,
+            `"${getLabel(lead.budget)}"`,
+            `"${getLabel(lead.timeline)}"`,
             `"${lead.type}"`,
-            `"${(lead.description || '').replace(/"/g, '""')}"` // Escape quotes
+            `"${(lead.description || '').replace(/"/g, '""')}"`
         ]);
 
         const csvContent = [
@@ -428,8 +468,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
             ...rows.map(row => row.join(','))
         ].join('\n');
 
-        // Create Blob and Link
-        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -443,7 +482,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
         if (leads.length === 0) return;
 
         // Create Markdown Table
-        const headers = ['ID', '时间', '姓名', '电话', '公司', '职位', '行业', '预算', '类型', '需求'];
+        const headers = ['ID', '提交时间', '姓名', '电话', '公司', '职位', '行业', '预算', '时间', '类型', '需求'];
         const separator = headers.map(() => '---');
         
         const rows = leads.map(lead => [
@@ -453,8 +492,9 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
             lead.phone,
             lead.company || '-',
             lead.jobTitle || '-',
-            lead.industry || '-',
-            lead.budget || '-',
+            getLabel(lead.industry),
+            getLabel(lead.budget),
+            getLabel(lead.timeline),
             lead.type,
             (lead.description || '-').replace(/\n/g, ' ')
         ]);
@@ -475,7 +515,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
     };
 
     const handleClearData = () => {
-        if (window.confirm('Are you sure you want to delete all lead data? This cannot be undone.')) {
+        if (window.confirm('确定要清空所有数据吗？此操作无法撤销。')) {
             localStorage.removeItem('gansu_ai_leads');
             setLeads([]);
         }
@@ -497,43 +537,45 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative bg-[#111] border border-white/10 w-full max-w-4xl h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                        className="relative bg-[#111] border border-white/10 w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center bg-[#151515]">
+                        <div className="p-4 md:p-6 border-b border-white/10 flex flex-col md:flex-row justify-between items-center bg-[#151515] gap-4">
                             <div className="flex items-center gap-3">
-                                <Table className="w-5 h-5 text-electricBlue" />
+                                <div className="p-2 bg-electricBlue/10 rounded-lg">
+                                    <Table className="w-5 h-5 text-electricBlue" />
+                                </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-white">Backend Data Manager</h3>
-                                    <p className="text-xs text-gray-500">Local Storage View • {leads.length} Records</p>
+                                    <h3 className="text-lg font-bold text-white">后台数据管理</h3>
+                                    <p className="text-xs text-gray-500">本地存储记录 • 共 {leads.length} 条数据</p>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 flex-wrap justify-center">
                                 <button 
                                     onClick={handleCopyToFlowUs}
                                     disabled={leads.length === 0}
-                                    className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    className="px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
                                 >
                                     {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                    {copied ? 'Copied!' : 'Copy to FlowUs'}
+                                    {copied ? '已复制!' : '复制到 FlowUs'}
                                 </button>
                                 <button 
                                     onClick={handleDownloadCSV}
                                     disabled={leads.length === 0}
-                                    className="px-3 py-1.5 bg-electricBlue/10 hover:bg-electricBlue text-electricBlue hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    className="px-3 py-2 bg-electricBlue/10 hover:bg-electricBlue text-electricBlue hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Download className="w-3 h-3" /> Export CSV
+                                    <Download className="w-3 h-3" /> 导出 CSV
                                 </button>
                                 <button 
                                     onClick={handleClearData}
                                     disabled={leads.length === 0}
-                                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    className="px-3 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Trash2 className="w-3 h-3" /> Clear
+                                    <Trash2 className="w-3 h-3" /> 清空数据
                                 </button>
                                 <button 
                                     onClick={onClose}
-                                    className="p-1.5 hover:bg-white/10 rounded-lg transition-colors ml-2"
+                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors ml-2"
                                 >
                                     <X className="w-5 h-5 text-gray-400" />
                                 </button>
@@ -543,11 +585,11 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                         {/* Table Content */}
                         <div className="flex-1 overflow-auto">
                             {leads.length > 0 ? (
-                                <table className="w-full text-left border-collapse">
+                                <table className="w-full text-left border-collapse min-w-[1000px]">
                                     <thead className="bg-white/5 sticky top-0 z-10">
                                         <tr>
-                                            {['Time', 'Name', 'Phone', 'Company', 'Type', 'Desc'].map(head => (
-                                                <th key={head} className="p-4 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-white/10">
+                                            {['时间', '姓名', '电话', '公司', '职位', '行业', '预算', '类型', '需求'].map(head => (
+                                                <th key={head} className="p-4 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-white/10 font-bold">
                                                     {head}
                                                 </th>
                                             ))}
@@ -555,21 +597,24 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                                     </thead>
                                     <tbody className="divide-y divide-white/5">
                                         {leads.map((lead) => (
-                                            <tr key={lead.id} className="hover:bg-white/5 transition-colors">
-                                                <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{lead.timestamp}</td>
+                                            <tr key={lead.id} className="hover:bg-white/5 transition-colors group">
+                                                <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{lead.timestamp.split(' ')[0]}<br/>{lead.timestamp.split(' ')[1]}</td>
                                                 <td className="p-4 text-sm text-white font-medium">{lead.name}</td>
-                                                <td className="p-4 text-sm text-gray-300">{lead.phone}</td>
+                                                <td className="p-4 text-sm text-gray-300 font-mono">{lead.phone}</td>
                                                 <td className="p-4 text-sm text-gray-400">{lead.company || '-'}</td>
-                                                <td className="p-4 text-xs">
+                                                <td className="p-4 text-sm text-gray-400">{lead.jobTitle || '-'}</td>
+                                                <td className="p-4 text-sm text-gray-400">{getLabel(lead.industry)}</td>
+                                                <td className="p-4 text-sm text-gray-400">{getLabel(lead.budget)}</td>
+                                                <td className="p-4 text-xs whitespace-nowrap">
                                                     <span className={`px-2 py-1 rounded-full border ${
                                                         lead.type.includes('B2B') ? 'border-blue-500/30 text-blue-400 bg-blue-500/10' :
                                                         lead.type.includes('B2C') ? 'border-yellow-500/30 text-yellow-400 bg-yellow-500/10' :
                                                         'border-gray-500/30 text-gray-400'
                                                     }`}>
-                                                        {lead.type}
+                                                        {lead.type.split(' ')[0]}
                                                     </span>
                                                 </td>
-                                                <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={lead.description}>
+                                                <td className="p-4 text-sm text-gray-500 max-w-xs truncate group-hover:whitespace-normal group-hover:bg-[#1a1a1a] transition-all absolute-hover" title={lead.description}>
                                                     {lead.description || '-'}
                                                 </td>
                                             </tr>
@@ -581,7 +626,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                                     <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
                                         <Table className="w-8 h-8 opacity-20" />
                                     </div>
-                                    <p>No data submitted yet.</p>
+                                    <p>暂无数据 (No Data)</p>
                                 </div>
                             )}
                         </div>
