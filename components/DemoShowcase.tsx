@@ -37,26 +37,26 @@ const DemoShowcase: React.FC = () => {
     <SectionWrapper className="bg-black relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900 -z-10" />
-      <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-electricBlue/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-electricBlue/5 rounded-full blur-[80px] md:blur-[120px] pointer-events-none" />
 
       {/* Main Container - Centered */}
       <div className="w-full h-full flex flex-col items-center justify-center py-8 relative z-10 max-w-6xl mx-auto">
         
         {/* Header */}
-        <div className="mb-8 text-center">
+        <div className="mb-6 md:mb-8 text-center">
             <div className="flex items-center justify-center gap-2 text-electricBlue mb-2">
-                <Tv className="w-5 h-5 animate-pulse" />
-                <span className="font-mono text-sm tracking-widest uppercase font-bold">Live Demo Showcase</span>
+                <Tv className="w-4 h-4 md:w-5 md:h-5 animate-pulse" />
+                <span className="font-mono text-xs md:text-sm tracking-widest uppercase font-bold">Live Demo Showcase</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">眼见为实 <span className="text-gray-500">Realtime</span></h2>
-            <p className="text-gray-400 text-sm">选择下方场景，体验 1:1 完美复刻</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-2">眼见为实 <span className="text-gray-500">Realtime</span></h2>
+            <p className="text-gray-400 text-xs md:text-sm">选择下方场景，体验 1:1 完美复刻</p>
         </div>
 
         {/* Video Player Area - Centered and Larger */}
         <div className="w-full max-w-5xl flex flex-col items-center">
             
             {/* Video Player Mockup */}
-            <div className="relative aspect-video w-full bg-gray-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl group mb-8">
+            <div className="relative aspect-video w-full bg-gray-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl group mb-6 md:mb-8">
                 <AnimatePresence mode="wait">
                     <motion.img 
                         key={activeDemo.id}
@@ -75,20 +75,20 @@ const DemoShowcase: React.FC = () => {
                     <motion.button 
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-electricBlue group-hover:border-electricBlue transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+                        className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-electricBlue group-hover:border-electricBlue transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
                     >
-                        <Play className="w-10 h-10 text-white ml-1 fill-white" />
+                        <Play className="w-8 h-8 md:w-10 md:h-10 text-white ml-1 fill-white" />
                     </motion.button>
                 </div>
 
                 {/* Video Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-10 flex justify-between items-end">
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0">
                     <div>
-                        <h3 className="text-3xl font-bold text-white mb-2">{activeDemo.title}</h3>
-                        <p className="text-gray-300 text-base mb-4">{activeDemo.desc}</p>
-                        <div className="flex gap-3">
+                        <h3 className="text-xl md:text-3xl font-bold text-white mb-1 md:mb-2">{activeDemo.title}</h3>
+                        <p className="text-gray-300 text-xs md:text-base mb-2 md:mb-4">{activeDemo.desc}</p>
+                        <div className="flex gap-2 md:gap-3 flex-wrap">
                             {activeDemo.tags.map((tag, i) => (
-                                <span key={i} className="text-xs bg-white/10 px-3 py-1.5 rounded-full border border-white/10 text-gray-300 backdrop-blur-sm">
+                                <span key={i} className="text-[10px] md:text-xs bg-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-white/10 text-gray-300 backdrop-blur-sm">
                                     {tag}
                                 </span>
                             ))}
@@ -97,22 +97,22 @@ const DemoShowcase: React.FC = () => {
                 </div>
             </div>
 
-            {/* Thumbnails / Selector - Centered */}
-            <div className="flex flex-wrap justify-center gap-4 w-full px-4">
+            {/* Thumbnails / Selector - Centered and Horizontal Scroll on Mobile */}
+            <div className="flex flex-row flex-nowrap md:flex-wrap justify-start md:justify-center gap-4 w-full px-0 overflow-x-auto pb-4 md:pb-0 scrollbar-hide snap-x">
                 {demos.map((item) => (
                     <button 
                         key={item.id}
                         onClick={() => setActiveDemo(item)}
-                        className={`flex items-center gap-3 p-3 pr-6 rounded-xl border transition-all duration-300 min-w-[180px] ${
+                        className={`flex items-center gap-3 p-2 md:p-3 pr-4 md:pr-6 rounded-xl border transition-all duration-300 min-w-[160px] md:min-w-[180px] shrink-0 snap-start ${
                             activeDemo.id === item.id 
-                            ? 'bg-electricBlue/10 border-electricBlue text-white scale-105 shadow-lg shadow-blue-900/20' 
-                            : 'bg-cardBg border-white/5 text-gray-500 hover:bg-white/5 hover:scale-105'
+                            ? 'bg-electricBlue/10 border-electricBlue text-white scale-100 md:scale-105 shadow-lg shadow-blue-900/20' 
+                            : 'bg-cardBg border-white/5 text-gray-500 hover:bg-white/5 md:hover:scale-105'
                         }`}
                     >
-                        <div className={`w-12 h-12 rounded-lg bg-cover bg-center shrink-0 border border-white/10`} style={{ backgroundImage: `url(${item.poster})` }} />
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg bg-cover bg-center shrink-0 border border-white/10`} style={{ backgroundImage: `url(${item.poster})` }} />
                         <div className="text-left">
-                            <div className="font-bold text-sm">{item.subtitle}</div>
-                            <div className="text-[10px] opacity-60 uppercase tracking-wider">Click to play</div>
+                            <div className="font-bold text-xs md:text-sm">{item.subtitle}</div>
+                            <div className="text-[10px] opacity-60 uppercase tracking-wider hidden md:block">Click to play</div>
                         </div>
                     </button>
                 ))}
@@ -120,13 +120,13 @@ const DemoShowcase: React.FC = () => {
         </div>
 
         {/* Footer Info */}
-        <div className="mt-12 text-center">
-             <div className="flex justify-center gap-8 text-gray-500 text-sm mb-4">
-                 <div className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors">
-                    <Mail className="w-4 h-4" /> contact@gansu-ai.com
+        <div className="mt-8 md:mt-12 text-center">
+             <div className="flex justify-center gap-4 md:gap-8 text-gray-500 text-xs md:text-sm mb-2 md:mb-4">
+                 <div className="flex items-center gap-1 md:gap-2 hover:text-white cursor-pointer transition-colors">
+                    <Mail className="w-3 h-3 md:w-4 md:h-4" /> contact@gansu-ai.com
                  </div>
-                 <div className="flex items-center gap-2 hover:text-white cursor-pointer transition-colors">
-                    <Phone className="w-4 h-4" /> 400-888-8888
+                 <div className="flex items-center gap-1 md:gap-2 hover:text-white cursor-pointer transition-colors">
+                    <Phone className="w-3 h-3 md:w-4 md:h-4" /> 400-888-8888
                  </div>
              </div>
              <div className="text-[10px] text-gray-700">
