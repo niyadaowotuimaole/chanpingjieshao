@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Check, BatteryWarning, Zap } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
+import { motion } from 'framer-motion';
 
 const PainGain: React.FC = () => {
   return (
@@ -12,7 +13,10 @@ const PainGain: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-6xl mx-auto h-auto md:h-[60vh]">
         {/* Pain: Traditional Labor */}
-        <div className="relative group p-6 md:p-8 rounded-2xl border border-white/10 bg-cardBg/50 backdrop-blur-sm grayscale transition-all duration-500 hover:grayscale-0 flex flex-col justify-center min-h-[300px]">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -5 }}
+          className="relative group p-6 md:p-8 rounded-2xl border border-white/10 bg-cardBg/50 backdrop-blur-sm grayscale transition-all duration-500 hover:grayscale-0 flex flex-col justify-center min-h-[300px]"
+        >
           <div className="absolute top-4 left-4 md:top-6 md:left-6 text-textGray/50 font-mono text-xs md:text-sm">BEFORE</div>
           <div className="mb-4 md:mb-6">
             <BatteryWarning className="w-8 h-8 md:w-12 md:h-12 text-gray-500 mb-2 md:mb-4" />
@@ -32,10 +36,13 @@ const PainGain: React.FC = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
 
         {/* Gain: AI Solution */}
-        <div className="relative p-6 md:p-8 rounded-2xl border border-electricBlue bg-gradient-to-br from-cardBg to-[#0a1525] shadow-[0_0_30px_rgba(41,121,255,0.15)] flex flex-col justify-center transform transition-transform hover:-translate-y-2 min-h-[320px]">
+        <motion.div 
+          whileHover={{ scale: 1.02, y: -5 }}
+          className="relative p-6 md:p-8 rounded-2xl border border-electricBlue bg-gradient-to-br from-cardBg to-[#0a1525] shadow-[0_0_30px_rgba(41,121,255,0.15)] flex flex-col justify-center min-h-[320px]"
+        >
            <div className="absolute top-4 left-4 md:top-6 md:left-6 text-electricBlue font-mono text-xs md:text-sm">AFTER</div>
            <div className="absolute top-4 right-4 md:top-6 md:right-6 px-3 py-1 bg-electricBlue text-white text-[10px] md:text-xs font-bold rounded-full animate-pulse">
               RECOMMENDED
@@ -60,7 +67,7 @@ const PainGain: React.FC = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
       </div>
     </SectionWrapper>
   );

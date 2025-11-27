@@ -41,11 +41,11 @@ const B2CSolutions: React.FC = () => {
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          whileHover={{ y: -10 }}
+          whileHover={{ y: -15, scale: 1.02 }}
           className="group relative rounded-2xl p-[1px] bg-gradient-to-b from-gray-500/30 to-transparent hover:from-gray-400/60 transition-all duration-500 h-auto md:h-[400px]"
         >
             <div className="bg-[#0a0a0a] rounded-2xl h-full p-6 md:p-8 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-md">
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-500/50 to-transparent" />
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-500/50 to-transparent opacity-50" />
                 
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-900 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 border border-gray-800 group-hover:border-gray-500 shadow-lg">
                     <Briefcase className="w-6 h-6 md:w-7 md:h-7 text-gray-400 group-hover:text-white" />
@@ -58,9 +58,13 @@ const B2CSolutions: React.FC = () => {
                     无需反复面试。<br/>24h 在线展示技能、回答HR提问。
                 </p>
                 
-                <div className="mt-auto w-full py-3 rounded-lg border border-gray-800 text-gray-500 text-sm font-medium group-hover:bg-gray-800 group-hover:text-white transition-all cursor-default">
+                <motion.div 
+                    whileHover={{ scale: 1.05, backgroundColor: "rgba(31, 41, 55, 1)" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="mt-auto w-full py-3 rounded-lg border border-gray-800 text-gray-500 text-sm font-medium group-hover:text-white transition-colors cursor-default"
+                >
                     求职效率 Max
-                </div>
+                </motion.div>
             </div>
         </motion.div>
 
@@ -69,7 +73,7 @@ const B2CSolutions: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, y: -5 }}
             className="group relative rounded-2xl p-[1px] bg-gradient-to-b from-yellow-500 via-yellow-600/50 to-transparent shadow-[0_0_60px_rgba(234,179,8,0.1)] h-auto md:h-[460px] z-10 my-4 md:my-0"
         >
             <div className="absolute -inset-0.5 bg-gradient-to-b from-yellow-500 to-yellow-700 rounded-2xl opacity-20 group-hover:opacity-40 blur transition duration-500" />
@@ -95,9 +99,13 @@ const B2CSolutions: React.FC = () => {
                     告别拍摄焦虑。输入脚本文案，<br/>日产 <span className="text-white font-bold border-b border-yellow-500/50">1000+</span> 条高质量短视频，<br/>快速起号变现。
                 </p>
                 
-                <button className="mt-auto w-full py-4 rounded-xl bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold text-sm shadow-lg shadow-yellow-900/20 hover:shadow-yellow-500/40 hover:from-yellow-500 hover:to-yellow-400 transition-all transform hover:-translate-y-1">
+                <motion.button 
+                    whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(234, 179, 8, 0.4)" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="mt-auto w-full py-4 rounded-xl bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold text-sm shadow-lg shadow-yellow-900/20 transition-all"
+                >
                     立即生成资产
-                </button>
+                </motion.button>
             </div>
         </motion.div>
 
@@ -106,11 +114,11 @@ const B2CSolutions: React.FC = () => {
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          whileHover={{ y: -10 }}
+          whileHover={{ y: -15, scale: 1.02 }}
           className="group relative rounded-2xl p-[1px] bg-gradient-to-b from-electricBlue/50 to-transparent hover:from-electricBlue transition-all duration-500 h-auto md:h-[400px]"
         >
             <div className="bg-[#0a0a0a] rounded-2xl h-full p-6 md:p-8 flex flex-col items-center text-center relative overflow-hidden backdrop-blur-md">
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-electricBlue/50 to-transparent" />
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-electricBlue/50 to-transparent opacity-50" />
 
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-electricBlue/5 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 border border-electricBlue/30 group-hover:border-electricBlue shadow-lg shadow-blue-900/20">
                     <Diamond className="w-6 h-6 md:w-7 md:h-7 text-electricBlue" />
@@ -123,9 +131,13 @@ const B2CSolutions: React.FC = () => {
                     将你的数字分身授权给品牌方<br/>直播或拍摄，坐享被动收入。
                 </p>
                 
-                <div className="mt-auto w-full py-3 rounded-lg border border-electricBlue/30 text-electricBlue text-sm font-medium group-hover:bg-electricBlue group-hover:text-white transition-all cursor-pointer">
+                <motion.div 
+                    whileHover={{ scale: 1.05, backgroundColor: "rgba(41, 121, 255, 1)", color: "white" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="mt-auto w-full py-3 rounded-lg border border-electricBlue/30 text-electricBlue text-sm font-medium transition-colors cursor-pointer"
+                >
                     开启被动收入
-                </div>
+                </motion.div>
             </div>
         </motion.div>
 

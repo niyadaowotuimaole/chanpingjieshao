@@ -65,35 +65,37 @@ const B2BSolutions: React.FC = () => {
         {/* Navigation Tabs */}
         <div className="w-full md:w-1/4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide shrink-0">
           {industries.map((item) => (
-            <button
+            <motion.button
               key={item.id}
               onClick={() => setActiveTab(item)}
-              className={`flex items-center gap-3 p-3 md:p-4 rounded-xl text-left transition-all duration-300 min-w-[140px] md:min-w-0 flex-shrink-0 ${
+              whileHover={{ x: 5, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex items-center gap-3 p-3 md:p-4 rounded-xl text-left transition-colors duration-300 min-w-[140px] md:min-w-0 flex-shrink-0 ${
                 activeTab.id === item.id 
                   ? 'bg-electricBlue text-white shadow-lg shadow-blue-900/20' 
-                  : 'bg-transparent text-gray-500 hover:bg-white/5'
+                  : 'bg-transparent text-gray-500'
               }`}
             >
               {item.icon}
               <span className="font-semibold text-sm md:text-base">{item.name}</span>
-            </button>
+            </motion.button>
           ))}
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 relative bg-cardBg rounded-3xl border border-white/10 overflow-hidden min-h-[450px] md:min-h-0">
+        <div className="flex-1 relative bg-cardBg rounded-3xl border border-white/10 overflow-hidden min-h-[450px] md:min-h-0 shadow-2xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab.id}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="absolute inset-0 flex flex-col md:flex-row"
             >
               {/* Text Content */}
               <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center z-10 bg-cardBg/90 backdrop-blur-md md:bg-transparent h-1/2 md:h-full overflow-y-auto">
-                <div className="text-electricBlue text-5xl md:text-6xl font-black mb-4 md:mb-6 opacity-20 absolute top-4 left-4 md:static">
+                <div className="text-electricBlue text-5xl md:text-6xl font-black mb-4 md:mb-6 opacity-20 absolute top-4 left-4 md:static select-none">
                     0{industries.indexOf(activeTab) + 1}
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 mt-8 md:mt-0">{activeTab.title}</h3>
@@ -101,21 +103,27 @@ const B2BSolutions: React.FC = () => {
                   {activeTab.desc}
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/10">
+                  <div className="bg-white/5 p-3 md:p-4 rounded-lg border border-white/10 backdrop-blur-sm">
                     <div className="text-[10px] md:text-xs text-gray-500 mb-1">关键指标</div>
                     <div className="text-electricBlue font-bold text-lg md:text-xl">{activeTab.stats}</div>
                   </div>
-                  <button className="flex items-center gap-2 text-sm font-semibold hover:text-electricBlue transition-colors">
+                  <motion.button 
+                    whileHover={{ x: 5, color: "#2979FF" }}
+                    className="flex items-center gap-2 text-sm font-semibold text-white transition-colors"
+                  >
                     了解详情 <ArrowUpRight className="w-4 h-4" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
               {/* Image Content */}
               <div className="w-full md:w-1/2 h-1/2 md:h-full absolute md:static bottom-0 inset-x-0 z-0 md:z-auto">
-                <img 
+                <motion.img 
                     src={activeTab.image} 
                     alt={activeTab.name} 
+                    initial={{ scale: 1.1 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 5 }}
                     className="w-full h-full object-cover grayscale opacity-50 md:opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-transparent to-cardBg md:bg-gradient-to-l md:from-transparent md:to-cardBg" />

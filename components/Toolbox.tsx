@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, Video, PenTool, TrendingUp, Globe } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
+import { motion } from 'framer-motion';
 
 const Toolbox: React.FC = () => {
   return (
@@ -19,7 +20,11 @@ const Toolbox: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto md:h-[60vh] w-full">
         
         {/* Module A: Text to Image - Large Square */}
-        <div className="md:col-span-2 md:row-span-2 bg-cardBg border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden group min-h-[300px]">
+        <motion.div 
+            whileHover={{ scale: 1.01, y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="md:col-span-2 md:row-span-2 bg-cardBg border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden group min-h-[300px]"
+        >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
                 <Image className="w-24 h-24 md:w-32 md:h-32" />
             </div>
@@ -36,10 +41,14 @@ const Toolbox: React.FC = () => {
                     <img src="https://picsum.photos/id/28/200/200" className="rounded-lg opacity-50 grayscale hover:grayscale-0 transition-all duration-500 w-full aspect-square object-cover" />
                 </div>
             </div>
-        </div>
+        </motion.div>
 
         {/* Module B: Image to Video - Wide Rectangle */}
-        <div className="md:col-span-2 bg-cardBg border border-white/10 rounded-2xl p-6 relative overflow-hidden group flex flex-col justify-center min-h-[160px]">
+        <motion.div 
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="md:col-span-2 bg-cardBg border border-white/10 rounded-2xl p-6 relative overflow-hidden group flex flex-col justify-center min-h-[160px]"
+        >
             <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-20 group-hover:opacity-100 transition-opacity duration-500">
                 <Video className="w-16 h-16 md:w-20 md:h-20 text-electricBlue" />
             </div>
@@ -49,25 +58,33 @@ const Toolbox: React.FC = () => {
                 </h3>
                 <p className="text-gray-400 text-sm">解决 "拍摄困难"。让静态商品图动起来，自动生成商品展示短视频。</p>
             </div>
-        </div>
+        </motion.div>
 
         {/* Module C: Trends - Small */}
-        <div className="bg-cardBg border border-white/10 rounded-2xl p-6 flex flex-row md:flex-col items-center md:items-start justify-between hover:bg-white/5 transition-colors min-h-[120px]">
+        <motion.div 
+            whileHover={{ scale: 1.05, y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="bg-cardBg border border-white/10 rounded-2xl p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors min-h-[120px]"
+        >
             <TrendingUp className="w-8 h-8 text-electricBlue mb-0 md:mb-4 mr-4 md:mr-0" />
             <div>
                 <h3 className="text-lg font-bold">热点追踪</h3>
                 <p className="text-xs text-gray-400">自动抓取全网热门话题，辅助选题。</p>
             </div>
-        </div>
+        </motion.div>
 
         {/* Module D: Cross-border - Small */}
-        <div className="bg-cardBg border border-white/10 rounded-2xl p-6 flex flex-row md:flex-col items-center md:items-start justify-between hover:bg-white/5 transition-colors min-h-[120px]">
+        <motion.div 
+            whileHover={{ scale: 1.05, y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="bg-cardBg border border-white/10 rounded-2xl p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors min-h-[120px]"
+        >
             <Globe className="w-8 h-8 text-electricBlue mb-0 md:mb-4 mr-4 md:mr-0" />
             <div>
                 <h3 className="text-lg font-bold">跨境文案</h3>
                 <p className="text-xs text-gray-400">英/阿/法等多语种营销文案一键生成。</p>
             </div>
-        </div>
+        </motion.div>
       </div>
     </SectionWrapper>
   );
