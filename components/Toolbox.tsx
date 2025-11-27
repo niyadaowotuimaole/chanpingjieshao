@@ -1,11 +1,13 @@
-import React, { useState, useRef } from 'react';
-import { Image, Video, PenTool, TrendingUp, Globe, X, Upload, Loader2, Play } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Image, Video, PenTool, TrendingUp, Globe, X, Upload, Loader2, Play, Languages, Copy, Check, Sparkles, RefreshCw, Download, Wand2 } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenAI } from "@google/genai";
 
 const Toolbox: React.FC = () => {
   const [showVeoModal, setShowVeoModal] = useState(false);
+  const [showCopyModal, setShowCopyModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   
   return (
     <SectionWrapper>
@@ -24,10 +26,17 @@ const Toolbox: React.FC = () => {
         
         {/* Module A: Text to Image - Large Square */}
         <motion.div 
-            whileHover={{ scale: 1.01, y: -5 }}
+            onClick={() => setShowImageModal(true)}
+            whileHover={{ scale: 1.01, y: -5, borderColor: "rgba(41, 121, 255, 0.5)" }}
+            whileTap={{ scale: 0.99 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="md:col-span-2 md:row-span-2 bg-cardBg border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden group min-h-[300px]"
+            className="md:col-span-2 md:row-span-2 bg-cardBg border border-white/10 rounded-2xl p-6 md:p-8 relative overflow-hidden group min-h-[300px] cursor-pointer"
         >
+            {/* Click Hint */}
+            <div className="absolute top-4 right-4 bg-electricBlue/20 text-electricBlue text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                Try AI Image
+            </div>
+
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
                 <Image className="w-24 h-24 md:w-32 md:h-32" />
             </div>
@@ -39,14 +48,14 @@ const Toolbox: React.FC = () => {
                     <h3 className="text-xl md:text-2xl font-bold mb-2">文生图引擎</h3>
                     <p className="text-gray-400 text-sm">解决 "不懂设计"。一键生成高质量直播间背景、产品海报、营销素材。</p>
                 </div>
-                <div className="grid grid-cols-2 gap-2 mt-4">
+                <div className="grid grid-cols-2 gap-2 mt-4 pointer-events-none">
                     <img src="https://picsum.photos/id/16/200/200" className="rounded-lg opacity-50 grayscale hover:grayscale-0 transition-all duration-500 w-full aspect-square object-cover" />
                     <img src="https://picsum.photos/id/28/200/200" className="rounded-lg opacity-50 grayscale hover:grayscale-0 transition-all duration-500 w-full aspect-square object-cover" />
                 </div>
             </div>
         </motion.div>
 
-        {/* Module B: Image to Video - Wide Rectangle - NOW INTERACTIVE */}
+        {/* Module B: Image to Video - Wide Rectangle */}
         <motion.div 
             onClick={() => setShowVeoModal(true)}
             whileHover={{ scale: 1.02, y: -5, borderColor: "rgba(41, 121, 255, 0.5)" }}
@@ -70,38 +79,458 @@ const Toolbox: React.FC = () => {
             </div>
         </motion.div>
 
-        {/* Module C: Trends - Small */}
+        {/* Module C: Trends - Small - Enhanced Background */}
         <motion.div 
-            whileHover={{ scale: 1.05, y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+            whileHover={{ scale: 1.05, y: -5 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="bg-cardBg border border-white/10 rounded-2xl p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors min-h-[120px]"
+            className="bg-cardBg border border-white/10 rounded-2xl p-6 relative overflow-hidden group min-h-[120px]"
         >
-            <TrendingUp className="w-8 h-8 text-electricBlue mb-0 md:mb-4 mr-4 md:mr-0" />
-            <div>
-                <h3 className="text-lg font-bold">热点追踪</h3>
-                <p className="text-xs text-gray-400">自动抓取全网热门话题，辅助选题。</p>
+            {/* Dynamic Background: Scrolling Hot Search List */}
+            <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none select-none overflow-hidden">
+                <div className="animate-marquee-vertical space-y-3 p-4">
+                     {['甘肃天水麻辣烫', '董宇辉甘肃行', '兰州牛肉面', '助农苹果直播', '敦煌飞天仿妆', '沙漠骆驼', '莫高窟预约', '黄河风情线'].map((item, i) => (
+                         <div key={i} className="flex items-center gap-2 text-[10px] text-white whitespace-nowrap">
+                             <span className={`w-3 h-3 flex items-center justify-center rounded text-[8px] font-bold ${i < 3 ? 'bg-red-500' : 'bg-gray-700'}`}>{i + 1}</span>
+                             <span>{item}</span>
+                             <span className="text-[8px] text-gray-500">{Math.floor(Math.random() * 1000)}w</span>
+                         </div>
+                     ))}
+                      {['甘肃天水麻辣烫', '董宇辉甘肃行', '兰州牛肉面', '助农苹果直播'].map((item, i) => (
+                         <div key={`dup-${i}`} className="flex items-center gap-2 text-[10px] text-white whitespace-nowrap">
+                             <span className={`w-3 h-3 flex items-center justify-center rounded text-[8px] font-bold ${i < 3 ? 'bg-red-500' : 'bg-gray-700'}`}>{i + 1}</span>
+                             <span>{item}</span>
+                             <span className="text-[8px] text-gray-500">{Math.floor(Math.random() * 1000)}w</span>
+                         </div>
+                     ))}
+                </div>
+            </div>
+
+            <div className="relative z-10 h-full flex flex-row md:flex-col items-center md:items-start justify-between">
+                <TrendingUp className="w-8 h-8 text-electricBlue mb-0 md:mb-4 mr-4 md:mr-0 shrink-0" />
+                <div>
+                    <h3 className="text-lg font-bold">热点追踪</h3>
+                    <p className="text-xs text-gray-400 mt-1">
+                        实时抓取抖音/快手热榜，自动匹配本地货盘。
+                    </p>
+                </div>
             </div>
         </motion.div>
 
-        {/* Module D: Cross-border - Small */}
+        {/* Module D: Cross-border - Small - Enhanced Interaction */}
         <motion.div 
-            whileHover={{ scale: 1.05, y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+            onClick={() => setShowCopyModal(true)}
+            whileHover={{ scale: 1.05, y: -5, borderColor: "rgba(41, 121, 255, 0.5)" }}
+            whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="bg-cardBg border border-white/10 rounded-2xl p-6 flex flex-row md:flex-col items-center md:items-start justify-between transition-colors min-h-[120px]"
+            className="bg-cardBg border border-white/10 rounded-2xl p-6 relative overflow-hidden group cursor-pointer min-h-[120px]"
         >
-            <Globe className="w-8 h-8 text-electricBlue mb-0 md:mb-4 mr-4 md:mr-0" />
-            <div>
-                <h3 className="text-lg font-bold">跨境文案</h3>
-                <p className="text-xs text-gray-400">英/阿/法等多语种营销文案一键生成。</p>
+            {/* Click Hint */}
+            <div className="absolute top-2 right-2 bg-electricBlue/20 text-electricBlue text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                Try AI Copy
+            </div>
+
+            {/* Dynamic Background: Multilingual Typography */}
+            <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none select-none flex flex-wrap content-center justify-center gap-4 rotate-12 scale-125">
+                 <span className="text-2xl font-bold text-white/50">Hello</span>
+                 <span className="text-xl font-bold text-white/30">Bonjour</span>
+                 <span className="text-3xl font-bold text-white/40">مرحبا</span>
+                 <span className="text-lg font-bold text-white/60">Hola</span>
+                 <span className="text-2xl font-bold text-white/30">Привет</span>
+                 <span className="text-xl font-bold text-white/50">你好</span>
+                 <span className="text-3xl font-bold text-white/20">こんにちは</span>
+            </div>
+
+            <div className="relative z-10 h-full flex flex-row md:flex-col items-center md:items-start justify-between">
+                <Globe className="w-8 h-8 text-electricBlue mb-0 md:mb-4 mr-4 md:mr-0 shrink-0" />
+                <div>
+                    <h3 className="text-lg font-bold flex items-center gap-1">
+                        跨境文案 <Languages className="w-3 h-3 ml-1 opacity-50" />
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-1">
+                        点击输入中文，一键生成多语种地道营销文案。
+                    </p>
+                </div>
             </div>
         </motion.div>
       </div>
 
-      {/* VEO Generation Modal */}
+      {/* Modals */}
       <VeoModal isOpen={showVeoModal} onClose={() => setShowVeoModal(false)} />
+      <CopywritingModal isOpen={showCopyModal} onClose={() => setShowCopyModal(false)} />
+      <ImageGenModal isOpen={showImageModal} onClose={() => setShowImageModal(false)} />
+
     </SectionWrapper>
   );
 };
+
+// --- Image Generation Modal Component ---
+
+const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+    const [prompt, setPrompt] = useState('');
+    const [aspectRatio, setAspectRatio] = useState('1:1');
+    const [style, setStyle] = useState('Photorealistic');
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+
+    const ratios = ["1:1", "16:9", "9:16", "4:3", "3:4"];
+    const styles = ["Photorealistic", "Anime", "Cinematic", "3D Render", "Oil Painting"];
+
+    const handleGenerate = async () => {
+        if (!prompt.trim()) return;
+        setIsGenerating(true);
+        setGeneratedImage(null);
+
+        try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            
+            // Construct enhanced prompt
+            const fullPrompt = `${prompt}, ${style} style, high quality, highly detailed`;
+
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash-image',
+                contents: {
+                    parts: [{ text: fullPrompt }]
+                },
+                config: {
+                    imageConfig: {
+                        aspectRatio: aspectRatio,
+                        // imageSize: "1K" // Default
+                    }
+                }
+            });
+
+            // Parse response for image data
+            let foundImage = false;
+            if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
+                for (const part of response.candidates[0].content.parts) {
+                    if (part.inlineData) {
+                        const base64String = part.inlineData.data;
+                        setGeneratedImage(`data:image/png;base64,${base64String}`);
+                        foundImage = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!foundImage) {
+                throw new Error("No image data found in response");
+            }
+
+        } catch (error: any) {
+            console.error("Image Gen Error:", error);
+            alert("Image generation failed. Please try again or check your API key.");
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                    />
+
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="relative bg-[#1a1a1a] border border-white/10 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]"
+                    >
+                        {/* Header Mobile */}
+                        <div className="md:hidden p-4 border-b border-white/10 flex justify-between items-center">
+                            <h3 className="font-bold text-white flex items-center gap-2"><Image className="w-4 h-4 text-electricBlue"/> 文生图</h3>
+                            <button onClick={onClose}><X className="w-5 h-5 text-gray-400"/></button>
+                        </div>
+
+                        {/* Left: Controls */}
+                        <div className="w-full md:w-1/3 p-6 bg-[#151515] border-r border-white/5 flex flex-col gap-5 overflow-y-auto">
+                            <div>
+                                <h3 className="text-lg font-bold text-white hidden md:block mb-1">AI Image Gen</h3>
+                                <p className="text-xs text-gray-500 mb-4">Describe it, see it.</p>
+                                
+                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">Prompt</label>
+                                <textarea 
+                                    value={prompt}
+                                    onChange={(e) => setPrompt(e.target.value)}
+                                    placeholder="e.g., A futuristic cyberpunk city in Gansu desert..."
+                                    className="w-full h-32 bg-black/50 border border-white/10 rounded-xl p-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none resize-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">Aspect Ratio</label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {ratios.map(r => (
+                                        <button
+                                            key={r}
+                                            onClick={() => setAspectRatio(r)}
+                                            className={`py-2 px-1 text-xs rounded-lg border transition-all ${
+                                                aspectRatio === r 
+                                                ? 'bg-electricBlue text-white border-electricBlue' 
+                                                : 'bg-white/5 text-gray-400 border-transparent hover:bg-white/10'
+                                            }`}
+                                        >
+                                            {r}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">Style</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {styles.map(s => (
+                                        <button
+                                            key={s}
+                                            onClick={() => setStyle(s)}
+                                            className={`py-1.5 px-3 text-xs rounded-full border transition-all ${
+                                                style === s 
+                                                ? 'bg-white text-black border-white font-bold' 
+                                                : 'bg-transparent text-gray-400 border-white/20 hover:border-white/50'
+                                            }`}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={handleGenerate}
+                                disabled={isGenerating || !prompt.trim()}
+                                className="mt-auto w-full py-3 bg-gradient-to-r from-electricBlue to-blue-600 rounded-xl text-white font-bold shadow-lg hover:shadow-blue-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                                {isGenerating ? 'Dreaming...' : 'Generate Image'}
+                            </button>
+                        </div>
+
+                        {/* Right: Preview */}
+                        <div className="w-full md:w-2/3 bg-[#0a0a0a] flex items-center justify-center p-6 relative bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 to-black">
+                            {generatedImage ? (
+                                <div className="relative max-w-full max-h-full group">
+                                    <img 
+                                        src={generatedImage} 
+                                        alt="Generated" 
+                                        className="max-w-full max-h-[80vh] rounded-lg shadow-2xl"
+                                    />
+                                    <a 
+                                        href={generatedImage} 
+                                        download={`gansu-ai-gen-${Date.now()}.png`}
+                                        className="absolute bottom-4 right-4 bg-white text-black px-4 py-2 rounded-full font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 hover:bg-gray-200"
+                                    >
+                                        <Download className="w-4 h-4" /> Download
+                                    </a>
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-600 flex flex-col items-center">
+                                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4 animate-pulse">
+                                        <Image className="w-10 h-10 opacity-20" />
+                                    </div>
+                                    <p className="text-sm">Your masterpiece will appear here</p>
+                                </div>
+                            )}
+
+                            {/* Close Button Desktop */}
+                            <button 
+                                onClick={onClose}
+                                className="absolute top-4 right-4 hidden md:block text-gray-500 hover:text-white transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+// --- Copywriting Modal Component ---
+
+const CopywritingModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+    const [inputText, setInputText] = useState('');
+    const [targetLang, setTargetLang] = useState('English');
+    const [tone, setTone] = useState('Enthusiastic');
+    const [generatedText, setGeneratedText] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const languages = [
+        { name: 'English', label: '英语 (English)' },
+        { name: 'Arabic', label: '阿拉伯语 (Arabic)' },
+        { name: 'French', label: '法语 (French)' },
+        { name: 'Russian', label: '俄语 (Russian)' },
+        { name: 'Spanish', label: '西班牙语 (Spanish)' },
+        { name: 'Japanese', label: '日语 (Japanese)' },
+    ];
+
+    const handleGenerate = async () => {
+        if (!inputText.trim()) return;
+        setIsGenerating(true);
+        setGeneratedText('');
+
+        try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            
+            const prompt = `
+                Role: You are an expert cross-border e-commerce copywriter.
+                Task: Adapt the following Chinese product/promotional text into ${targetLang}.
+                Tone: ${tone}.
+                Input Text: "${inputText}"
+                
+                Requirements:
+                1. Do not just translate word-for-word. Adapt it culturally for the target market.
+                2. Use emojis appropriately for social media.
+                3. Include 3 relevant hashtags at the end.
+                4. Output ONLY the generated copy, no preamble.
+            `;
+
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt,
+            });
+
+            setGeneratedText(response.text.trim());
+        } catch (error) {
+            console.error(error);
+            setGeneratedText("Error generating text. Please check your network or API key.");
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    const handleCopy = () => {
+        if (!generatedText) return;
+        navigator.clipboard.writeText(generatedText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                    />
+
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="relative bg-[#1a1a1a] border border-white/10 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[85vh]"
+                    >
+                        {/* Header Mobile */}
+                         <div className="md:hidden p-4 border-b border-white/10 flex justify-between items-center">
+                            <h3 className="font-bold text-white flex items-center gap-2"><Globe className="w-4 h-4 text-electricBlue"/> 跨境文案生成</h3>
+                            <button onClick={onClose}><X className="w-5 h-5 text-gray-400"/></button>
+                        </div>
+
+                        {/* Left: Input Area */}
+                        <div className="flex-1 p-6 flex flex-col gap-4 border-r border-white/5 bg-[#151515]">
+                            <div>
+                                <h3 className="text-lg font-bold text-white hidden md:block mb-1">AI 跨境文案</h3>
+                                <p className="text-xs text-gray-500 mb-4">输入中文，生成全球营销爆款文案</p>
+                                
+                                <textarea 
+                                    value={inputText}
+                                    onChange={(e) => setInputText(e.target.value)}
+                                    placeholder="例如：这款甘肃静宁苹果，口感脆甜，产地直采，现在下单包邮..."
+                                    className="w-full h-32 md:h-40 bg-black/50 border border-white/10 rounded-xl p-4 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none resize-none"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs text-gray-500">目标语言</label>
+                                    <div className="relative">
+                                        <select 
+                                            value={targetLang}
+                                            onChange={(e) => setTargetLang(e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none appearance-none"
+                                        >
+                                            {languages.map(l => <option key={l.name} value={l.name}>{l.label}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs text-gray-500">文案风格</label>
+                                    <select 
+                                        value={tone}
+                                        onChange={(e) => setTone(e.target.value)}
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none appearance-none"
+                                    >
+                                        <option value="Enthusiastic">热情带货 (Selling)</option>
+                                        <option value="Professional">专业介绍 (Pro)</option>
+                                        <option value="Storytelling">故事感 (Story)</option>
+                                        <option value="Short">短促有力 (Short)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={handleGenerate}
+                                disabled={isGenerating || !inputText.trim()}
+                                className="mt-auto w-full py-3 bg-gradient-to-r from-electricBlue to-blue-600 rounded-xl text-white font-bold shadow-lg hover:shadow-blue-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                                {isGenerating ? '生成中...' : '立即生成文案'}
+                            </button>
+                        </div>
+
+                        {/* Right: Output Area */}
+                        <div className="flex-1 p-6 bg-[#1a1a1a] flex flex-col relative">
+                            <div className="flex justify-between items-center mb-4">
+                                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Generated Result</h4>
+                                {generatedText && (
+                                    <button 
+                                        onClick={handleCopy}
+                                        className="text-xs flex items-center gap-1 px-2 py-1 bg-white/5 rounded hover:bg-white/10 text-gray-300 transition-colors"
+                                    >
+                                        {copied ? <Check className="w-3 h-3 text-green-500"/> : <Copy className="w-3 h-3"/>}
+                                        {copied ? 'Copied' : 'Copy'}
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="flex-1 bg-black/30 rounded-xl border border-white/5 p-4 overflow-y-auto relative min-h-[200px]">
+                                {generatedText ? (
+                                    <p className="text-sm text-gray-200 whitespace-pre-wrap leading-relaxed">
+                                        {generatedText}
+                                    </p>
+                                ) : (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 opacity-50">
+                                        <Languages className="w-10 h-10 mb-2" />
+                                        <p className="text-xs">Results will appear here</p>
+                                    </div>
+                                )}
+                            </div>
+
+                             {/* Close Button Desktop */}
+                             <button 
+                                onClick={onClose}
+                                className="absolute top-4 right-4 hidden md:block text-gray-500 hover:text-white transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+}
 
 // --- Veo Modal Component ---
 
