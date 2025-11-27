@@ -14,9 +14,11 @@ import Footer from './components/Footer';
 const App: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ container: containerRef });
+  
+  // Adjusted damping for smoother progress bar animation
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
-    damping: 30,
+    damping: 25, 
     restDelta: 0.001
   });
 
