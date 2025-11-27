@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Mail, Phone, Building, User, CheckCircle2, ChevronDown, AlertCircle, Loader2, Lock, Download, Trash2, X, Table, Copy, Check, Briefcase, Wallet, Clock, FileText } from 'lucide-react';
+import { Send, Mail, Phone, Building, User, CheckCircle2, ChevronDown, AlertCircle, Loader2, Lock, Download, Trash2, X, Table, Copy, Check, Briefcase, Wallet, Clock, FileText, KeyRound, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Footer: React.FC = () => {
@@ -434,13 +434,36 @@ const getLabel = (val: string) => VALUE_MAP[val] || val || '-';
 const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
     const [leads, setLeads] = useState<any[]>([]);
     const [copied, setCopied] = useState(false);
+    
+    // Auth State
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [loginError, setLoginError] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
+            // Reset auth state on open for security
+            setIsAuthenticated(false);
+            setPasswordInput('');
+            setLoginError(false);
+            
+            // Load Data
             const data = JSON.parse(localStorage.getItem('gansu_ai_leads') || '[]');
             setLeads(data);
         }
     }, [isOpen]);
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Simple Hardcoded Check
+        if (passwordInput === 'admin888') {
+            setIsAuthenticated(true);
+            setLoginError(false);
+        } else {
+            setLoginError(true);
+            setPasswordInput('');
+        }
+    };
 
     const handleDownloadCSV = () => {
         if (leads.length === 0) return;
@@ -533,104 +556,164 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                     />
                     
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative bg-[#111] border border-white/10 w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
-                    >
-                        {/* Header */}
-                        <div className="p-4 md:p-6 border-b border-white/10 flex flex-col md:flex-row justify-between items-center bg-[#151515] gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-electricBlue/10 rounded-lg">
-                                    <Table className="w-5 h-5 text-electricBlue" />
+                    {!isAuthenticated ? (
+                        // LOGIN SCREEN
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative bg-[#111] border border-white/10 w-full max-w-sm rounded-2xl shadow-2xl p-8 z-[101]"
+                        >
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 rounded-full bg-electricBlue/10 flex items-center justify-center mx-auto mb-4 border border-electricBlue/20">
+                                    <Lock className="w-8 h-8 text-electricBlue" />
                                 </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-white">后台数据管理</h3>
-                                    <p className="text-xs text-gray-500">本地存储记录 • 共 {leads.length} 条数据</p>
-                                </div>
+                                <h3 className="text-xl font-bold text-white">管理员登录</h3>
+                                <p className="text-xs text-gray-500 mt-1">请输入访问密码 (默认: admin888)</p>
                             </div>
-                            <div className="flex gap-2 flex-wrap justify-center">
-                                <button 
-                                    onClick={handleCopyToFlowUs}
-                                    disabled={leads.length === 0}
-                                    className="px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                    {copied ? '已复制!' : '复制到 FlowUs'}
-                                </button>
-                                <button 
-                                    onClick={handleDownloadCSV}
-                                    disabled={leads.length === 0}
-                                    className="px-3 py-2 bg-electricBlue/10 hover:bg-electricBlue text-electricBlue hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Download className="w-3 h-3" /> 导出 CSV
-                                </button>
-                                <button 
-                                    onClick={handleClearData}
-                                    disabled={leads.length === 0}
-                                    className="px-3 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Trash2 className="w-3 h-3" /> 清空数据
-                                </button>
-                                <button 
-                                    onClick={onClose}
-                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors ml-2"
-                                >
-                                    <X className="w-5 h-5 text-gray-400" />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Table Content */}
-                        <div className="flex-1 overflow-auto">
-                            {leads.length > 0 ? (
-                                <table className="w-full text-left border-collapse min-w-[1000px]">
-                                    <thead className="bg-white/5 sticky top-0 z-10">
-                                        <tr>
-                                            {['时间', '姓名', '电话', '公司', '职位', '行业', '预算', '类型', '需求'].map(head => (
-                                                <th key={head} className="p-4 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-white/10 font-bold">
-                                                    {head}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {leads.map((lead) => (
-                                            <tr key={lead.id} className="hover:bg-white/5 transition-colors group">
-                                                <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{lead.timestamp.split(' ')[0]}<br/>{lead.timestamp.split(' ')[1]}</td>
-                                                <td className="p-4 text-sm text-white font-medium">{lead.name}</td>
-                                                <td className="p-4 text-sm text-gray-300 font-mono">{lead.phone}</td>
-                                                <td className="p-4 text-sm text-gray-400">{lead.company || '-'}</td>
-                                                <td className="p-4 text-sm text-gray-400">{lead.jobTitle || '-'}</td>
-                                                <td className="p-4 text-sm text-gray-400">{getLabel(lead.industry)}</td>
-                                                <td className="p-4 text-sm text-gray-400">{getLabel(lead.budget)}</td>
-                                                <td className="p-4 text-xs whitespace-nowrap">
-                                                    <span className={`px-2 py-1 rounded-full border ${
-                                                        lead.type.includes('B2B') ? 'border-blue-500/30 text-blue-400 bg-blue-500/10' :
-                                                        lead.type.includes('B2C') ? 'border-yellow-500/30 text-yellow-400 bg-yellow-500/10' :
-                                                        'border-gray-500/30 text-gray-400'
-                                                    }`}>
-                                                        {lead.type.split(' ')[0]}
-                                                    </span>
-                                                </td>
-                                                <td className="p-4 text-sm text-gray-500 max-w-xs truncate group-hover:whitespace-normal group-hover:bg-[#1a1a1a] transition-all absolute-hover" title={lead.description}>
-                                                    {lead.description || '-'}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-500">
-                                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                                        <Table className="w-8 h-8 opacity-20" />
+                            
+                            <form onSubmit={handleLogin} className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="relative">
+                                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                        <input 
+                                            autoFocus
+                                            type="password"
+                                            value={passwordInput}
+                                            onChange={(e) => setPasswordInput(e.target.value)}
+                                            placeholder="Password"
+                                            className={`w-full bg-black/50 border rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none transition-all ${
+                                                loginError 
+                                                ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' 
+                                                : 'border-white/10 focus:border-electricBlue'
+                                            }`}
+                                        />
                                     </div>
-                                    <p>暂无数据 (No Data)</p>
+                                    {loginError && (
+                                        <motion.p 
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            className="text-[10px] text-red-500 flex items-center gap-1 pl-1"
+                                        >
+                                            <AlertCircle className="w-3 h-3" /> 密码错误，请重试
+                                        </motion.p>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    </motion.div>
+                                <button 
+                                    type="submit"
+                                    className="w-full py-3 bg-electricBlue text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <LogIn className="w-4 h-4" /> 确认进入
+                                </button>
+                            </form>
+                            <button 
+                                onClick={onClose}
+                                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </motion.div>
+                    ) : (
+                        // DATA DASHBOARD
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative bg-[#111] border border-white/10 w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden z-[101]"
+                        >
+                            {/* Header */}
+                            <div className="p-4 md:p-6 border-b border-white/10 flex flex-col md:flex-row justify-between items-center bg-[#151515] gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-electricBlue/10 rounded-lg">
+                                        <Table className="w-5 h-5 text-electricBlue" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white">后台数据管理</h3>
+                                        <p className="text-xs text-gray-500">本地存储记录 • 共 {leads.length} 条数据</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2 flex-wrap justify-center">
+                                    <button 
+                                        onClick={handleCopyToFlowUs}
+                                        disabled={leads.length === 0}
+                                        className="px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                        {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                        {copied ? '已复制!' : '复制到 FlowUs'}
+                                    </button>
+                                    <button 
+                                        onClick={handleDownloadCSV}
+                                        disabled={leads.length === 0}
+                                        className="px-3 py-2 bg-electricBlue/10 hover:bg-electricBlue text-electricBlue hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                        <Download className="w-3 h-3" /> 导出 CSV
+                                    </button>
+                                    <button 
+                                        onClick={handleClearData}
+                                        disabled={leads.length === 0}
+                                        className="px-3 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                        <Trash2 className="w-3 h-3" /> 清空数据
+                                    </button>
+                                    <button 
+                                        onClick={onClose}
+                                        className="p-2 hover:bg-white/10 rounded-lg transition-colors ml-2"
+                                    >
+                                        <X className="w-5 h-5 text-gray-400" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Table Content */}
+                            <div className="flex-1 overflow-auto">
+                                {leads.length > 0 ? (
+                                    <table className="w-full text-left border-collapse min-w-[1000px]">
+                                        <thead className="bg-white/5 sticky top-0 z-10">
+                                            <tr>
+                                                {['时间', '姓名', '电话', '公司', '职位', '行业', '预算', '类型', '需求'].map(head => (
+                                                    <th key={head} className="p-4 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-white/10 font-bold">
+                                                        {head}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            {leads.map((lead) => (
+                                                <tr key={lead.id} className="hover:bg-white/5 transition-colors group">
+                                                    <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{lead.timestamp.split(' ')[0]}<br/>{lead.timestamp.split(' ')[1]}</td>
+                                                    <td className="p-4 text-sm text-white font-medium">{lead.name}</td>
+                                                    <td className="p-4 text-sm text-gray-300 font-mono">{lead.phone}</td>
+                                                    <td className="p-4 text-sm text-gray-400">{lead.company || '-'}</td>
+                                                    <td className="p-4 text-sm text-gray-400">{lead.jobTitle || '-'}</td>
+                                                    <td className="p-4 text-sm text-gray-400">{getLabel(lead.industry)}</td>
+                                                    <td className="p-4 text-sm text-gray-400">{getLabel(lead.budget)}</td>
+                                                    <td className="p-4 text-xs whitespace-nowrap">
+                                                        <span className={`px-2 py-1 rounded-full border ${
+                                                            lead.type.includes('B2B') ? 'border-blue-500/30 text-blue-400 bg-blue-500/10' :
+                                                            lead.type.includes('B2C') ? 'border-yellow-500/30 text-yellow-400 bg-yellow-500/10' :
+                                                            'border-gray-500/30 text-gray-400'
+                                                        }`}>
+                                                            {lead.type.split(' ')[0]}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4 text-sm text-gray-500 max-w-xs truncate group-hover:whitespace-normal group-hover:bg-[#1a1a1a] transition-all absolute-hover" title={lead.description}>
+                                                        {lead.description || '-'}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="h-full flex flex-col items-center justify-center text-gray-500">
+                                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                                            <Table className="w-8 h-8 opacity-20" />
+                                        </div>
+                                        <p>暂无数据 (No Data)</p>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
             )}
         </AnimatePresence>
