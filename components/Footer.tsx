@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">企业名称</label>
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">企业名称 <span className="text-gray-600 font-normal">(选填)</span></label>
                                     <div className="relative">
                                         <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                         <input 
@@ -126,7 +126,7 @@ const Footer: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">所属行业</label>
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">所属行业 <span className="text-gray-600 font-normal">(选填)</span></label>
                                     <div className="relative">
                                         <select 
                                             name="industry"
@@ -148,7 +148,7 @@ const Footer: React.FC = () => {
                             {/* New Fields: Budget & Timeline */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">预算范围</label>
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">预算范围 <span className="text-gray-600 font-normal">(选填)</span></label>
                                     <div className="relative">
                                         <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                         <select 
@@ -166,7 +166,7 @@ const Footer: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">启动时间</label>
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">启动时间 <span className="text-gray-600 font-normal">(选填)</span></label>
                                     <div className="relative">
                                         <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                         <select 
