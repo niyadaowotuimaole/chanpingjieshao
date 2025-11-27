@@ -25,7 +25,7 @@ const Hero: React.FC = () => {
             </h1>
             <p className="text-base md:text-xl text-textGray max-w-lg leading-relaxed mx-auto md:mx-0">
               从企业降本增效，到个人数字资产变现。<br/>
-              甘肃 AI 全场景解决方案，为您打造永不疲倦的超级员工。
+              AI 数字人全场景解决方案，为您打造永不疲倦的超级员工。
             </p>
           </motion.div>
 

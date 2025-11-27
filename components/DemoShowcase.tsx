@@ -23,11 +23,11 @@ const demos = [
   {
     id: 'edu',
     title: "数字名师",
-    subtitle: "Virtual Teacher",
+    subtitle: "智慧教育",
     desc: "形象亲和，肢体语言丰富，完美复刻真人教学风格。",
-    poster: "https://picsum.photos/id/1062/800/600.webp",
+    poster: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/upload/images/2025-11-27/6928b3abe7914.png",
     video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/image/qQSEen9lyC.mp4",
-    tags: ["知识讲解", "PPT联动", "智能答疑"]
+    tags: ["知识讲解", "PPT联动", "数字录课"]
   }
 ];
 
