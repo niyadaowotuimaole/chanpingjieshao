@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, Tv } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -33,6 +33,18 @@ const demos = [
 
 const DemoShowcase: React.FC = () => {
   const [activeDemo, setActiveDemo] = useState<any>(demos[0]);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Reset playback state when switching demos
+  useEffect(() => {
+    setIsPlaying(false);
+  }, [activeDemo]);
+
+  const handlePlayClick = () => {
+    if (activeDemo.video) {
+        setIsPlaying(true);
+    }
+  };
 
   return (
     <SectionWrapper className="bg-black relative overflow-hidden">
@@ -59,9 +71,10 @@ const DemoShowcase: React.FC = () => {
             {/* Video Player Mockup */}
             <div className="relative aspect-video w-full bg-gray-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl group mb-6 md:mb-8">
                 <AnimatePresence mode="wait">
-                    {activeDemo.video ? (
+                    {/* Render Video ONLY if it exists AND isPlaying is true */}
+                    {activeDemo.video && isPlaying ? (
                         <motion.div
-                            key={activeDemo.id}
+                            key="video-player"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -76,8 +89,9 @@ const DemoShowcase: React.FC = () => {
                             />
                         </motion.div>
                     ) : (
+                        // Otherwise render Poster Image
                         <motion.img 
-                            key={activeDemo.id}
+                            key="poster-image"
                             src={activeDemo.poster}
                             alt={activeDemo.title}
                             initial={{ opacity: 0, scale: 1.05 }}
@@ -91,21 +105,22 @@ const DemoShowcase: React.FC = () => {
                     )}
                 </AnimatePresence>
 
-                {/* Play Button Overlay - Only show if NO video */}
-                {!activeDemo.video && (
+                {/* Play Button Overlay - Show if NOT playing */}
+                {!isPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center z-20">
                         <motion.button 
+                            onClick={handlePlayClick}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-electricBlue group-hover:border-electricBlue transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+                            className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-electricBlue group-hover:border-electricBlue transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] cursor-pointer"
                         >
                             <Play className="w-8 h-8 md:w-10 md:h-10 text-white ml-1 fill-white" />
                         </motion.button>
                     </div>
                 )}
 
-                {/* Video Info Overlay - Only show if NO video to prevent blocking controls */}
-                {!activeDemo.video && (
+                {/* Video Info Overlay - Show if NOT playing to prevent blocking controls */}
+                {!isPlaying && (
                     <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0 pointer-events-none">
                         <div className="pointer-events-auto"> 
                             <h3 className="text-xl md:text-3xl font-bold text-white mb-1 md:mb-2">{activeDemo.title}</h3>
