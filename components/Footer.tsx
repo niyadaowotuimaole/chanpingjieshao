@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Mail, Phone, Building, User, FileText, CheckCircle2, Wallet, Clock } from 'lucide-react';
+import { Send, Mail, Phone, Building, User, FileText, CheckCircle2, Wallet, Clock, ChevronDown, Briefcase } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Footer: React.FC = () => {
@@ -8,6 +8,7 @@ const Footer: React.FC = () => {
     name: '',
     phone: '',
     company: '',
+    jobTitle: '',
     industry: '',
     budget: '',
     timeline: '',
@@ -120,11 +121,29 @@ const Footer: React.FC = () => {
                                             value={formData.company}
                                             onChange={handleInputChange}
                                             type="text" 
-                                            placeholder="公司或组织名称" 
+                                            placeholder="公司名称" 
                                             className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600" 
                                         />
                                     </div>
                                 </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">职位 <span className="text-gray-600 font-normal">(选填)</span></label>
+                                    <div className="relative">
+                                        <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                        <input 
+                                            name="jobTitle"
+                                            value={formData.jobTitle}
+                                            onChange={handleInputChange}
+                                            type="text" 
+                                            placeholder="您的职位" 
+                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600" 
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Industry & Budget Row */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-mono text-gray-500 uppercase ml-1">所属行业 <span className="text-gray-600 font-normal">(选填)</span></label>
                                     <div className="relative">
@@ -141,12 +160,9 @@ const Footer: React.FC = () => {
                                             <option value="government">政务服务</option>
                                             <option value="other">其他行业</option>
                                         </select>
+                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                     </div>
                                 </div>
-                            </div>
-
-                            {/* New Fields: Budget & Timeline */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-mono text-gray-500 uppercase ml-1">预算范围 <span className="text-gray-600 font-normal">(选填)</span></label>
                                     <div className="relative">
@@ -163,25 +179,29 @@ const Footer: React.FC = () => {
                                             <option value="20-50w">20-50万</option>
                                             <option value=">50w">50万以上</option>
                                         </select>
+                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                     </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">启动时间 <span className="text-gray-600 font-normal">(选填)</span></label>
-                                    <div className="relative">
-                                        <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                        <select 
-                                            name="timeline"
-                                            value={formData.timeline}
-                                            onChange={handleInputChange}
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
-                                        >
-                                            <option value="" disabled>选择时间...</option>
-                                            <option value="1week">一周内</option>
-                                            <option value="1month">一月内</option>
-                                            <option value="3months">三月内</option>
-                                            <option value="research">仅调研</option>
-                                        </select>
-                                    </div>
+                            </div>
+                            
+                            {/* Timeline & Type Row (Merged or separate? Let's keep separate for clarity or grid) */}
+                             <div className="space-y-1">
+                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">预计启动时间</label>
+                                <div className="relative">
+                                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                    <select 
+                                        name="timeline"
+                                        value={formData.timeline}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                    >
+                                        <option value="" disabled>选择时间...</option>
+                                        <option value="1week">一周内</option>
+                                        <option value="1month">一月内</option>
+                                        <option value="3months">三月内</option>
+                                        <option value="research">仅调研</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                                 </div>
                             </div>
 
