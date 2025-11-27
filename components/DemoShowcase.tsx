@@ -14,11 +14,12 @@ const demos = [
   },
   {
     id: 'news',
-    title: "多语种播报",
-    subtitle: "Multilingual News",
-    desc: "支持 中/英/法/阿/俄 等 20+ 种语言无缝切换。",
-    poster: "https://picsum.photos/id/838/800/600.webp",
-    tags: ["唇形同步", "超清画质", "零延迟"]
+    title: "背景前景随意切换",
+    subtitle: "任意场景切换",
+    desc: "支持背景、前景、语言无缝切换，适应各种场景。",
+    poster: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/upload/images/2025-11-27/6928c26317a5f.png",
+    video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/image/w6B5GqI6XJ.mp4",
+    tags: ["唇形同步", "超清画质", "随意创作"]
   },
   {
     id: 'edu',
@@ -160,7 +161,7 @@ const DemoShowcase: React.FC = () => {
                         <div className="text-left">
                             <div className="font-bold text-xs md:text-sm">{item.subtitle}</div>
                             <div className="text-[10px] text-gray-500">
-                                {item.id === 'edu' ? 'Video Demo' : 'Live Demo'}
+                                {item.video ? 'Video Demo' : 'Live Demo'}
                             </div>
                         </div>
                     </button>
