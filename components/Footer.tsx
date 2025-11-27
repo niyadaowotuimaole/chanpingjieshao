@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Mail, Phone, Building, User, CheckCircle2, ChevronDown, AlertCircle, Loader2, Lock, Download, Trash2, X, Table, Copy, Check, Briefcase, Wallet, Clock, FileText, KeyRound, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+// @ts-ignore
+import { supabase } from '../src/supabaseClient';
 
 const Footer: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -60,7 +62,7 @@ const Footer: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate all required fields
@@ -88,21 +90,37 @@ const Footer: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // --- REAL DATA HANDLING START ---
-    setTimeout(() => {
-        const newLead = {
-            id: Date.now(),
-            timestamp: new Date().toLocaleString('zh-CN'), // Use Chinese locale time
-            ...formData
-        };
-        
-        const existingLeads = JSON.parse(localStorage.getItem('gansu_ai_leads') || '[]');
-        localStorage.setItem('gansu_ai_leads', JSON.stringify([newLead, ...existingLeads]));
+    try {
+        if (!supabase) {
+            throw new Error("Supabase client not initialized. Check environment variables.");
+        }
 
-        setIsSubmitting(false);
+        // Map form data to database columns (snake_case)
+        const dbData = {
+            name: formData.name,
+            phone: formData.phone,
+            company: formData.company,
+            job_title: formData.jobTitle,
+            industry: formData.industry,
+            budget: formData.budget,
+            timeline: formData.timeline,
+            type: formData.type,
+            description: formData.description
+        };
+
+        const { error } = await supabase
+            .from('leads')
+            .insert([dbData]);
+
+        if (error) throw error;
+
         setSubmitted(true);
-    }, 1500);
-    // --- REAL DATA HANDLING END ---
+    } catch (error: any) {
+        console.error('Submission error:', error);
+        alert('提交失败，请重试或联系客服。错误: ' + error.message);
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   // Helper to determine field status
@@ -377,7 +395,7 @@ const Footer: React.FC = () => {
                         <div>
                             <h3 className="text-2xl font-bold text-white mb-2">提交成功</h3>
                             <p className="text-gray-400 max-w-xs mx-auto text-sm">
-                                感谢您的信任。数据已录入后台系统，解决方案专家将在 24 小时内与您取得联系 ({formData.phone})。
+                                感谢您的信任。数据已录入系统，解决方案专家将在 24 小时内与您取得联系 ({formData.phone})。
                             </p>
                         </div>
                         <button 
@@ -434,6 +452,7 @@ const getLabel = (val: string) => VALUE_MAP[val] || val || '-';
 const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
     const [leads, setLeads] = useState<any[]>([]);
     const [copied, setCopied] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(false);
     
     // Auth State
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -446,12 +465,32 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
             setIsAuthenticated(false);
             setPasswordInput('');
             setLoginError(false);
-            
-            // Load Data
-            const data = JSON.parse(localStorage.getItem('gansu_ai_leads') || '[]');
-            setLeads(data);
+            // Don't load data yet, wait for login
         }
     }, [isOpen]);
+
+    // Fetch data from Supabase after login
+    const fetchLeads = async () => {
+        if (!supabase) {
+             alert('Supabase 未配置，无法获取数据');
+             return;
+        }
+        setIsLoadingData(true);
+        try {
+            const { data, error } = await supabase
+                .from('leads')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            setLeads(data || []);
+        } catch (error: any) {
+            console.error('Error fetching leads:', error);
+            alert('获取数据失败: ' + error.message);
+        } finally {
+            setIsLoadingData(false);
+        }
+    };
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -459,6 +498,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
         if (passwordInput === 'admin888') {
             setIsAuthenticated(true);
             setLoginError(false);
+            fetchLeads(); // Load data on successful login
         } else {
             setLoginError(true);
             setPasswordInput('');
@@ -474,11 +514,11 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
         // CSV Rows
         const rows = leads.map(lead => [
             lead.id,
-            `"${lead.timestamp}"`,
+            `"${new Date(lead.created_at).toLocaleString('zh-CN')}"`,
             `"${lead.name}"`,
             `"${lead.phone}"`,
             `"${lead.company || ''}"`,
-            `"${lead.jobTitle || ''}"`,
+            `"${lead.job_title || ''}"`,
             `"${getLabel(lead.industry)}"`,
             `"${getLabel(lead.budget)}"`,
             `"${getLabel(lead.timeline)}"`,
@@ -510,11 +550,11 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
         
         const rows = leads.map(lead => [
             lead.id,
-            lead.timestamp,
+            new Date(lead.created_at).toLocaleString('zh-CN'),
             lead.name,
             lead.phone,
             lead.company || '-',
-            lead.jobTitle || '-',
+            lead.job_title || '-',
             getLabel(lead.industry),
             getLabel(lead.budget),
             getLabel(lead.timeline),
@@ -537,10 +577,15 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
         }
     };
 
-    const handleClearData = () => {
-        if (window.confirm('确定要清空所有数据吗？此操作无法撤销。')) {
-            localStorage.removeItem('gansu_ai_leads');
-            setLeads([]);
+    const handleClearData = async () => {
+        if (!supabase) return;
+        if (window.confirm('警告：您正在操作真实数据库！\n目前仅支持清空本地视图，真实删除请去 Supabase 后台操作以确保安全。')) {
+             // For safety in this demo, I won't add a 'delete all' command to the DB directly to prevent accidents.
+             // You can uncomment the code below if you really want it.
+             /*
+             const { error } = await supabase.from('leads').delete().neq('id', 0);
+             if (!error) setLeads([]);
+             */
         }
     };
 
@@ -628,8 +673,8 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                                         <Table className="w-5 h-5 text-electricBlue" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-white">后台数据管理</h3>
-                                        <p className="text-xs text-gray-500">本地存储记录 • 共 {leads.length} 条数据</p>
+                                        <h3 className="text-lg font-bold text-white">后台数据管理 (Supabase)</h3>
+                                        <p className="text-xs text-gray-500">云端数据库 • 共 {leads.length} 条数据</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2 flex-wrap justify-center">
@@ -650,8 +695,7 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                                     </button>
                                     <button 
                                         onClick={handleClearData}
-                                        disabled={leads.length === 0}
-                                        className="px-3 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                        className="px-3 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2"
                                     >
                                         <Trash2 className="w-3 h-3" /> 清空数据
                                     </button>
@@ -666,7 +710,12 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
 
                             {/* Table Content */}
                             <div className="flex-1 overflow-auto">
-                                {leads.length > 0 ? (
+                                {isLoadingData ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-electricBlue">
+                                        <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                                        <p>正在从云端加载数据...</p>
+                                    </div>
+                                ) : leads.length > 0 ? (
                                     <table className="w-full text-left border-collapse min-w-[1000px]">
                                         <thead className="bg-white/5 sticky top-0 z-10">
                                             <tr>
@@ -680,11 +729,14 @@ const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen
                                         <tbody className="divide-y divide-white/5">
                                             {leads.map((lead) => (
                                                 <tr key={lead.id} className="hover:bg-white/5 transition-colors group">
-                                                    <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{lead.timestamp.split(' ')[0]}<br/>{lead.timestamp.split(' ')[1]}</td>
+                                                    <td className="p-4 text-xs text-gray-500 whitespace-nowrap">
+                                                        {new Date(lead.created_at).toLocaleDateString()}<br/>
+                                                        {new Date(lead.created_at).toLocaleTimeString()}
+                                                    </td>
                                                     <td className="p-4 text-sm text-white font-medium">{lead.name}</td>
                                                     <td className="p-4 text-sm text-gray-300 font-mono">{lead.phone}</td>
                                                     <td className="p-4 text-sm text-gray-400">{lead.company || '-'}</td>
-                                                    <td className="p-4 text-sm text-gray-400">{lead.jobTitle || '-'}</td>
+                                                    <td className="p-4 text-sm text-gray-400">{lead.job_title || '-'}</td>
                                                     <td className="p-4 text-sm text-gray-400">{getLabel(lead.industry)}</td>
                                                     <td className="p-4 text-sm text-gray-400">{getLabel(lead.budget)}</td>
                                                     <td className="p-4 text-xs whitespace-nowrap">
