@@ -2,10 +2,14 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import Hero from './components/Hero';
 import PainGain from './components/PainGain';
+import ProductCore from './components/ProductCore';
 import Toolbox from './components/Toolbox';
+import InteractionLogic from './components/InteractionLogic';
 import B2BSolutions from './components/B2BSolutions';
 import B2CSolutions from './components/B2CSolutions';
+import Workflow from './components/Workflow';
 import DemoShowcase from './components/DemoShowcase';
+import Footer from './components/Footer';
 
 const App: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,9 +28,9 @@ const App: React.FC = () => {
         style={{ scaleX }}
       />
 
-      {/* Navigation Dots (Updated count to 6) */}
+      {/* Navigation Dots (Updated count to 10 for all sections) */}
       <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40 hidden md:flex flex-col gap-4">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/20" />
         ))}
       </div>
@@ -38,10 +42,14 @@ const App: React.FC = () => {
       >
         <Hero />
         <PainGain />
+        <ProductCore />
         <Toolbox />
+        <InteractionLogic />
         <B2BSolutions />
         <B2CSolutions />
+        <Workflow />
         <DemoShowcase />
+        <Footer />
       </div>
     </div>
   );
