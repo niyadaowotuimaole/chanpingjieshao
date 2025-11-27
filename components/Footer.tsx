@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Mail, Phone, Building, User, FileText, CheckCircle2 } from 'lucide-react';
+import { Send, Mail, Phone, Building, User, FileText, CheckCircle2, Wallet, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Footer: React.FC = () => {
@@ -9,6 +9,8 @@ const Footer: React.FC = () => {
     phone: '',
     company: '',
     industry: '',
+    budget: '',
+    timeline: '',
     type: '企业定制 (B2B)',
     description: ''
   });
@@ -35,16 +37,16 @@ const Footer: React.FC = () => {
             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[80px]" />
         </div>
 
-        <div className="w-full max-w-5xl mx-auto text-center z-10 flex flex-col md:flex-row gap-8 md:gap-16 items-center">
+        <div className="w-full max-w-6xl mx-auto text-center z-10 flex flex-col md:flex-row gap-8 md:gap-16 items-center justify-center h-full py-12 md:py-0">
             
-            {/* Left Text Area */}
-            <div className="text-center md:text-left md:w-5/12">
-                <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
+            {/* Left Text Area - Compact on Mobile */}
+            <div className="text-center md:text-left md:w-5/12 flex flex-col justify-center">
+                <h2 className="text-3xl md:text-6xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
                     技术有温度<br />
                     <span className="text-electricBlue">资产无边界</span>
                 </h2>
                 
-                <p className="text-base md:text-lg text-gray-400 mb-8 max-w-sm mx-auto md:mx-0">
+                <p className="text-sm md:text-lg text-gray-400 mb-6 md:mb-8 max-w-sm mx-auto md:mx-0">
                     无论是企业降本增效，还是个人打造数字分身。立即预约演示，开启您的 AI 数字化之旅。
                 </p>
 
@@ -70,12 +72,12 @@ const Footer: React.FC = () => {
                 </div>
             </div>
 
-            {/* Right Form Area */}
-            <div className="w-full md:w-7/12">
-                <div className="bg-cardBg/80 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl relative">
+            {/* Right Form Area - Full Height scrollable on mobile if needed */}
+            <div className="w-full md:w-7/12 max-h-full overflow-y-auto scrollbar-hide">
+                <div className="bg-cardBg/80 backdrop-blur-xl border border-white/10 p-5 md:p-8 rounded-3xl shadow-2xl relative">
                     {!submitted ? (
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 text-left">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-mono text-gray-500 uppercase ml-1">姓名 *</label>
                                     <div className="relative">
@@ -108,7 +110,7 @@ const Footer: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="space-y-1">
                                     <label className="text-xs font-mono text-gray-500 uppercase ml-1">企业名称</label>
                                     <div className="relative">
@@ -143,6 +145,46 @@ const Footer: React.FC = () => {
                                 </div>
                             </div>
 
+                            {/* New Fields: Budget & Timeline */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">预算范围</label>
+                                    <div className="relative">
+                                        <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                        <select 
+                                            name="budget"
+                                            value={formData.budget}
+                                            onChange={handleInputChange}
+                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                        >
+                                            <option value="" disabled>选择预算...</option>
+                                            <option value="<5w">5万以内</option>
+                                            <option value="5-20w">5-20万</option>
+                                            <option value="20-50w">20-50万</option>
+                                            <option value=">50w">50万以上</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">启动时间</label>
+                                    <div className="relative">
+                                        <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                        <select 
+                                            name="timeline"
+                                            value={formData.timeline}
+                                            onChange={handleInputChange}
+                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                        >
+                                            <option value="" disabled>选择时间...</option>
+                                            <option value="1week">一周内</option>
+                                            <option value="1month">一月内</option>
+                                            <option value="3months">三月内</option>
+                                            <option value="research">仅调研</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="space-y-1">
                                 <label className="text-xs font-mono text-gray-500 uppercase ml-1">咨询类型</label>
                                 <div className="flex gap-2">
@@ -171,7 +213,7 @@ const Footer: React.FC = () => {
                                         name="description"
                                         value={formData.description}
                                         onChange={handleInputChange}
-                                        rows={3}
+                                        rows={2}
                                         placeholder="请简述您的具体需求或应用场景..." 
                                         className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600 resize-none" 
                                     />
@@ -201,25 +243,24 @@ const Footer: React.FC = () => {
                             <p className="text-gray-400">
                                 感谢您的预约。我们的解决方案专家将在 24 小时内与您联系 ({formData.phone})，请保持电话畅通。
                             </p>
+                            <button onClick={() => setSubmitted(false)} className="mt-8 text-sm text-electricBlue hover:underline">
+                                返回表单
+                            </button>
                         </motion.div>
                     )}
                 </div>
             </div>
 
             {/* Mobile Contact Info (Visible only on mobile) */}
-            <div className="md:hidden flex gap-6 text-gray-500 text-sm mt-4">
+            <div className="md:hidden flex gap-6 text-gray-500 text-sm mt-4 pb-8">
                 <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4" />
                     contact@gansu-ai.com
                 </div>
-                <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    400-888-8888
-                </div>
             </div>
-
-            <div className="absolute bottom-4 left-0 right-0 text-center text-[10px] text-gray-800 pointer-events-none">
-                © 2024 Gansu AI Digital Human Solution. All Rights Reserved.
+            
+            <div className="absolute bottom-2 left-0 right-0 text-center text-[10px] text-gray-800 pointer-events-none">
+                © 2024 Gansu AI Digital Human Solution.
             </div>
         </div>
     </section>
