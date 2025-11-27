@@ -4,6 +4,12 @@ import SectionWrapper from './SectionWrapper';
 import { motion } from 'framer-motion';
 
 const B2CSolutions: React.FC = () => {
+  const FORM_URL = "https://flowus.cn/form/34345fd9-0b56-40eb-992f-1e2ec56d6acd?code=Q0RVP0";
+
+  const handleRedirect = () => {
+    window.open(FORM_URL, '_blank');
+  };
+
   return (
     <SectionWrapper className="relative">
       {/* Background Ambience */}
@@ -59,9 +65,10 @@ const B2CSolutions: React.FC = () => {
                 </p>
                 
                 <motion.div 
+                    onClick={handleRedirect}
                     whileHover={{ scale: 1.05, backgroundColor: "rgba(31, 41, 55, 1)" }}
                     whileTap={{ scale: 0.95 }}
-                    className="mt-auto w-full py-3 rounded-lg border border-gray-800 text-gray-500 text-sm font-medium group-hover:text-white transition-colors cursor-default"
+                    className="mt-auto w-full py-3 rounded-lg border border-gray-800 text-gray-500 text-sm font-medium group-hover:text-white transition-colors cursor-pointer"
                 >
                     求职效率 Max
                 </motion.div>
@@ -100,6 +107,7 @@ const B2CSolutions: React.FC = () => {
                 </p>
                 
                 <motion.button 
+                    onClick={handleRedirect}
                     whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(234, 179, 8, 0.4)" }}
                     whileTap={{ scale: 0.95 }}
                     className="mt-auto w-full py-4 rounded-xl bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-bold text-sm shadow-lg shadow-yellow-900/20 transition-all"
@@ -132,6 +140,7 @@ const B2CSolutions: React.FC = () => {
                 </p>
                 
                 <motion.div 
+                    onClick={handleRedirect}
                     whileHover={{ scale: 1.05, backgroundColor: "rgba(41, 121, 255, 1)", color: "white" }}
                     whileTap={{ scale: 0.95 }}
                     className="mt-auto w-full py-3 rounded-lg border border-electricBlue/30 text-electricBlue text-sm font-medium transition-colors cursor-pointer"
