@@ -26,12 +26,13 @@ const demos = [
     subtitle: "Virtual Teacher",
     desc: "形象亲和，肢体语言丰富，完美复刻真人教学风格。",
     poster: "https://picsum.photos/id/1062/800/600.webp",
+    video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/image/qQSEen9lyC.mp4",
     tags: ["知识讲解", "PPT联动", "智能答疑"]
   }
 ];
 
 const DemoShowcase: React.FC = () => {
-  const [activeDemo, setActiveDemo] = useState(demos[0]);
+  const [activeDemo, setActiveDemo] = useState<any>(demos[0]);
 
   return (
     <SectionWrapper className="bg-black relative overflow-hidden">
@@ -58,45 +59,67 @@ const DemoShowcase: React.FC = () => {
             {/* Video Player Mockup */}
             <div className="relative aspect-video w-full bg-gray-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl group mb-6 md:mb-8">
                 <AnimatePresence mode="wait">
-                    <motion.img 
-                        key={activeDemo.id}
-                        src={activeDemo.poster}
-                        alt={activeDemo.title}
-                        initial={{ opacity: 0, scale: 1.05 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        loading="lazy"
-                        decoding="async"
-                        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"
-                    />
+                    {activeDemo.video ? (
+                        <motion.div
+                            key={activeDemo.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 w-full h-full bg-black"
+                        >
+                            <video 
+                                src={activeDemo.video} 
+                                poster={activeDemo.poster}
+                                controls 
+                                autoPlay
+                                className="w-full h-full object-contain"
+                            />
+                        </motion.div>
+                    ) : (
+                        <motion.img 
+                            key={activeDemo.id}
+                            src={activeDemo.poster}
+                            alt={activeDemo.title}
+                            initial={{ opacity: 0, scale: 1.05 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            loading="lazy"
+                            decoding="async"
+                            className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"
+                        />
+                    )}
                 </AnimatePresence>
 
-                {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center z-20">
-                    <motion.button 
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-electricBlue group-hover:border-electricBlue transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
-                    >
-                        <Play className="w-8 h-8 md:w-10 md:h-10 text-white ml-1 fill-white" />
-                    </motion.button>
-                </div>
+                {/* Play Button Overlay - Only show if NO video */}
+                {!activeDemo.video && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                        <motion.button 
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-electricBlue group-hover:border-electricBlue transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+                        >
+                            <Play className="w-8 h-8 md:w-10 md:h-10 text-white ml-1 fill-white" />
+                        </motion.button>
+                    </div>
+                )}
 
-                {/* Video Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0">
-                    <div>
-                        <h3 className="text-xl md:text-3xl font-bold text-white mb-1 md:mb-2">{activeDemo.title}</h3>
-                        <p className="text-gray-300 text-xs md:text-base mb-2 md:mb-4">{activeDemo.desc}</p>
-                        <div className="flex gap-2 md:gap-3 flex-wrap">
-                            {activeDemo.tags.map((tag, i) => (
-                                <span key={i} className="text-[10px] md:text-xs bg-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-white/10 text-gray-300 backdrop-blur-sm">
-                                    {tag}
-                                </span>
-                            ))}
+                {/* Video Info Overlay - Only show if NO video to prevent blocking controls */}
+                {!activeDemo.video && (
+                    <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0 pointer-events-none">
+                        <div className="pointer-events-auto"> 
+                            <h3 className="text-xl md:text-3xl font-bold text-white mb-1 md:mb-2">{activeDemo.title}</h3>
+                            <p className="text-gray-300 text-xs md:text-base mb-2 md:mb-4">{activeDemo.desc}</p>
+                            <div className="flex gap-2 md:gap-3 flex-wrap">
+                                {activeDemo.tags.map((tag: string, i: number) => (
+                                    <span key={i} className="text-[10px] md:text-xs bg-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-white/10 text-gray-300 backdrop-blur-sm">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Thumbnails / Selector - Centered and Horizontal Scroll on Mobile */}
@@ -121,7 +144,9 @@ const DemoShowcase: React.FC = () => {
                         </div>
                         <div className="text-left">
                             <div className="font-bold text-xs md:text-sm">{item.subtitle}</div>
-                            <div className="text-[10px] text-gray-500">Live Demo</div>
+                            <div className="text-[10px] text-gray-500">
+                                {item.id === 'edu' ? 'Video Demo' : 'Live Demo'}
+                            </div>
                         </div>
                     </button>
                 ))}
