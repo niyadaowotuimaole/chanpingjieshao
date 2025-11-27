@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Mail, Phone, Tv } from 'lucide-react';
+import { Play, Tv } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -9,7 +9,7 @@ const demos = [
     title: "电商带货实录",
     subtitle: "E-Commerce Live",
     desc: "情绪饱满，动作自然，支持 7x24h 自动回复弹幕。",
-    poster: "https://picsum.photos/id/435/800/600",
+    poster: "https://picsum.photos/id/435/800/600.webp",
     tags: ["实时互动", "商品卡片", "促销话术"]
   },
   {
@@ -17,7 +17,7 @@ const demos = [
     title: "多语种播报",
     subtitle: "Multilingual News",
     desc: "支持 中/英/法/阿/俄 等 20+ 种语言无缝切换。",
-    poster: "https://picsum.photos/id/838/800/600",
+    poster: "https://picsum.photos/id/838/800/600.webp",
     tags: ["唇形同步", "超清画质", "零延迟"]
   },
   {
@@ -25,7 +25,7 @@ const demos = [
     title: "数字名师",
     subtitle: "Virtual Teacher",
     desc: "形象亲和，肢体语言丰富，完美复刻真人教学风格。",
-    poster: "https://picsum.photos/id/1062/800/600",
+    poster: "https://picsum.photos/id/1062/800/600.webp",
     tags: ["知识讲解", "PPT联动", "智能答疑"]
   }
 ];
@@ -66,6 +66,8 @@ const DemoShowcase: React.FC = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.5 }}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"
                     />
                 </AnimatePresence>
@@ -109,31 +111,22 @@ const DemoShowcase: React.FC = () => {
                             : 'bg-cardBg border-white/5 text-gray-500 hover:bg-white/5 md:hover:scale-105'
                         }`}
                     >
-                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg bg-cover bg-center shrink-0 border border-white/10`} style={{ backgroundImage: `url(${item.poster})` }} />
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg shrink-0 border border-white/10 overflow-hidden relative">
+                             <img 
+                                src={item.poster} 
+                                alt={item.subtitle}
+                                loading="lazy"
+                                className="w-full h-full object-cover"
+                             />
+                        </div>
                         <div className="text-left">
                             <div className="font-bold text-xs md:text-sm">{item.subtitle}</div>
-                            <div className="text-[10px] opacity-60 uppercase tracking-wider hidden md:block">Click to play</div>
+                            <div className="text-[10px] text-gray-500">Live Demo</div>
                         </div>
                     </button>
                 ))}
             </div>
         </div>
-
-        {/* Footer Info */}
-        <div className="mt-8 md:mt-12 text-center">
-             <div className="flex justify-center gap-4 md:gap-8 text-gray-500 text-xs md:text-sm mb-2 md:mb-4">
-                 <div className="flex items-center gap-1 md:gap-2 hover:text-white cursor-pointer transition-colors">
-                    <Mail className="w-3 h-3 md:w-4 md:h-4" /> contact@gansu-ai.com
-                 </div>
-                 <div className="flex items-center gap-1 md:gap-2 hover:text-white cursor-pointer transition-colors">
-                    <Phone className="w-3 h-3 md:w-4 md:h-4" /> 400-888-8888
-                 </div>
-             </div>
-             <div className="text-[10px] text-gray-700">
-                © 2024 Gansu AI Digital Human Solution. All Rights Reserved.
-             </div>
-        </div>
-
       </div>
     </SectionWrapper>
   );

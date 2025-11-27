@@ -11,7 +11,7 @@ const industries = [
     title: "24h 不间断带货",
     desc: "针对甘肃特产（百合、苹果等），打造日不落直播间。低成本测试爆品，承接闲时流量。",
     stats: "GMV 提升 40%",
-    image: "https://picsum.photos/id/1/800/500"
+    image: "https://picsum.photos/id/1/800/500.webp"
   },
   {
     id: 'local',
@@ -20,7 +20,7 @@ const industries = [
     title: "矩阵式探店视频",
     desc: "批量生成餐饮、娱乐团购推广视频。无需达人探店，数字人自动口播生成海量素材。",
     stats: "曝光量 提升 200%",
-    image: "https://picsum.photos/id/225/800/500"
+    image: "https://picsum.photos/id/225/800/500.webp"
   },
   {
     id: 'tourism',
@@ -29,7 +29,7 @@ const industries = [
     title: "AI 金牌导游",
     desc: "莫高窟、七彩丹霞多语种讲解。为甘肃文旅提供中英阿语导游，服务全球游客。",
     stats: "接待效率 提升 5倍",
-    image: "https://picsum.photos/id/1040/800/500"
+    image: "https://picsum.photos/id/1040/800/500.webp"
   },
   {
     id: 'gov',
@@ -38,7 +38,7 @@ const industries = [
     title: "智慧大厅引导",
     desc: "办事大厅智能引导员，政策解读数字专员。提升政务服务温度，减少排队咨询时间。",
     stats: "满意度 98%",
-    image: "https://picsum.photos/id/26/800/500"
+    image: "https://picsum.photos/id/26/800/500.webp"
   },
   {
     id: 'edu',
@@ -47,7 +47,7 @@ const industries = [
     title: "偏远地区名师",
     desc: "将名师形象数字化，输送到教育资源匮乏地区。实现教育公平，标准化课程录制。",
     stats: "覆盖率 100%",
-    image: "https://picsum.photos/id/20/800/500"
+    image: "https://picsum.photos/id/20/800/500.webp"
   }
 ];
 
@@ -124,6 +124,8 @@ const B2BSolutions: React.FC = () => {
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 5 }}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover grayscale opacity-50 md:opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-transparent to-cardBg md:bg-gradient-to-l md:from-transparent md:to-cardBg" />

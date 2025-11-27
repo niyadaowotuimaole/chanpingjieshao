@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Send, Mail, Phone, Building, User, FileText, CheckCircle2, Wallet, Clock, ChevronDown, Briefcase } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Send, Mail, Phone, Building, User, CheckCircle2, ChevronDown, AlertCircle, Loader2, Lock, Download, Trash2, X, Table, Copy, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Footer: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+  
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -16,17 +19,114 @@ const Footer: React.FC = () => {
     description: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulate API call
-    setTimeout(() => {
-      setSubmitted(true);
-    }, 1000);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Validation Logic
+  const validateField = (name: string, value: string) => {
+    let error = '';
+    switch (name) {
+      case 'name':
+        if (!value.trim()) error = '请输入您的姓名';
+        else if (value.trim().length < 2) error = '姓名至少需要2个字符';
+        break;
+      case 'phone':
+        if (!value.trim()) error = '请输入联系电话';
+        else if (!/^1[3-9]\d{9}$/.test(value)) error = '请输入有效的11位手机号码';
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Validate immediately if already touched
+    if (touched[name]) {
+        setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+    } else {
+        if (name !== 'name' && name !== 'phone' && value) {
+             setTouched(prev => ({ ...prev, [name]: true }));
+        }
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate all required fields
+    const newErrors: Record<string, string> = {};
+    let hasError = false;
+    
+    ['name', 'phone'].forEach(key => {
+        const error = validateField(key, formData[key as keyof typeof formData]);
+        if (error) {
+            newErrors[key] = error;
+            hasError = true;
+        }
+    });
+
+    setErrors(newErrors);
+    setTouched(prev => ({ 
+        ...prev, 
+        name: true, 
+        phone: true, 
+        company: true, 
+        description: true 
+    }));
+
+    if (hasError) return;
+
+    setIsSubmitting(true);
+
+    // --- REAL DATA HANDLING START ---
+    // In a real production app, you would replace the code below with a fetch() call to your backend.
+    // Example:
+    // await fetch('/api/submit-lead', { method: 'POST', body: JSON.stringify(formData) });
+    
+    // For this demo, we save to LocalStorage so you can view it in the Admin Panel
+    setTimeout(() => {
+        const newLead = {
+            id: Date.now(),
+            timestamp: new Date().toLocaleString(),
+            ...formData
+        };
+        
+        const existingLeads = JSON.parse(localStorage.getItem('gansu_ai_leads') || '[]');
+        localStorage.setItem('gansu_ai_leads', JSON.stringify([newLead, ...existingLeads]));
+
+        setIsSubmitting(false);
+        setSubmitted(true);
+    }, 1500);
+    // --- REAL DATA HANDLING END ---
+  };
+
+  // Helper to determine field status
+  const getFieldStatus = (name: string) => {
+    const isTouched = touched[name];
+    const error = errors[name];
+    const value = formData[name as keyof typeof formData];
+
+    if (isTouched && error) return 'error';
+    if (isTouched && !error && value) return 'success';
+    return 'default';
+  };
+
+  const getBorderColor = (status: string) => {
+    switch (status) {
+        case 'error': return 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20';
+        case 'success': return 'border-green-500/50 focus:border-green-500 focus:ring-green-500/20';
+        default: return 'border-white/10 focus:border-electricBlue focus:ring-electricBlue/50';
+    }
   };
 
   return (
@@ -38,9 +138,9 @@ const Footer: React.FC = () => {
             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-purple-500/5 rounded-full blur-[80px]" />
         </div>
 
-        <div className="w-full max-w-6xl mx-auto text-center z-10 flex flex-col md:flex-row gap-8 md:gap-16 items-center justify-center h-full py-12 md:py-0">
+        <div className="w-full max-w-6xl mx-auto z-10 flex flex-col md:flex-row gap-8 md:gap-16 items-center justify-center h-full py-12 md:py-0">
             
-            {/* Left Text Area - Compact on Mobile */}
+            {/* Left Text Area */}
             <div className="text-center md:text-left md:w-5/12 flex flex-col justify-center">
                 <h2 className="text-3xl md:text-6xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
                     技术有温度<br />
@@ -56,235 +156,440 @@ const Footer: React.FC = () => {
                         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-electricBlue group-hover:text-white transition-colors">
                             <Mail className="w-5 h-5" />
                         </div>
-                        <div className="text-sm">
-                            <div className="text-gray-500 text-xs uppercase">Email</div>
-                            <div className="font-medium group-hover:text-white transition-colors">contact@gansu-ai.com</div>
+                        <div>
+                            <div className="text-xs text-gray-500">Email us</div>
+                            <div className="text-sm font-medium text-white">contact@gansu-ai.com</div>
                         </div>
                     </div>
+
                     <div className="flex items-center gap-4 group cursor-pointer">
-                         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-electricBlue group-hover:text-white transition-colors">
+                        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-electricBlue group-hover:text-white transition-colors">
                             <Phone className="w-5 h-5" />
                         </div>
-                        <div className="text-sm">
-                            <div className="text-gray-500 text-xs uppercase">Hotline</div>
-                            <div className="font-medium group-hover:text-white transition-colors">400-888-8888</div>
+                        <div>
+                            <div className="text-xs text-gray-500">Call us</div>
+                            <div className="text-sm font-medium text-white">400-888-8888</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Right Form Area - Full Height scrollable on mobile if needed */}
-            <div className="w-full md:w-7/12 max-h-full overflow-y-auto scrollbar-hide">
-                <div className="bg-cardBg/80 backdrop-blur-xl border border-white/10 p-5 md:p-8 rounded-3xl shadow-2xl relative">
-                    {!submitted ? (
-                        <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 text-left">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">姓名 *</label>
-                                    <div className="relative">
-                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                        <input 
-                                            required
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleInputChange}
-                                            type="text" 
-                                            placeholder="您的称呼" 
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600" 
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">联系电话 *</label>
-                                    <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                        <input 
-                                            required
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleInputChange}
-                                            type="tel" 
-                                            placeholder="手机号码" 
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600" 
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">企业名称 <span className="text-gray-600 font-normal">(选填)</span></label>
-                                    <div className="relative">
-                                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                        <input 
-                                            name="company"
-                                            value={formData.company}
-                                            onChange={handleInputChange}
-                                            type="text" 
-                                            placeholder="公司名称" 
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600" 
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">职位 <span className="text-gray-600 font-normal">(选填)</span></label>
-                                    <div className="relative">
-                                        <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                        <input 
-                                            name="jobTitle"
-                                            value={formData.jobTitle}
-                                            onChange={handleInputChange}
-                                            type="text" 
-                                            placeholder="您的职位" 
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600" 
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Industry & Budget Row */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">所属行业 <span className="text-gray-600 font-normal">(选填)</span></label>
-                                    <div className="relative">
-                                        <select 
-                                            name="industry"
-                                            value={formData.industry}
-                                            onChange={handleInputChange}
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 px-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
-                                        >
-                                            <option value="" disabled>选择行业...</option>
-                                            <option value="ecommerce">电商直播</option>
-                                            <option value="tourism">文旅宣传</option>
-                                            <option value="education">教育培训</option>
-                                            <option value="government">政务服务</option>
-                                            <option value="other">其他行业</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-mono text-gray-500 uppercase ml-1">预算范围 <span className="text-gray-600 font-normal">(选填)</span></label>
-                                    <div className="relative">
-                                        <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                        <select 
-                                            name="budget"
-                                            value={formData.budget}
-                                            onChange={handleInputChange}
-                                            className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
-                                        >
-                                            <option value="" disabled>选择预算...</option>
-                                            <option value="<5w">5万以内</option>
-                                            <option value="5-20w">5-20万</option>
-                                            <option value="20-50w">20-50万</option>
-                                            <option value=">50w">50万以上</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {/* Timeline & Type Row (Merged or separate? Let's keep separate for clarity or grid) */}
-                             <div className="space-y-1">
-                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">预计启动时间</label>
-                                <div className="relative">
-                                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                                    <select 
-                                        name="timeline"
-                                        value={formData.timeline}
-                                        onChange={handleInputChange}
-                                        className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
-                                    >
-                                        <option value="" disabled>选择时间...</option>
-                                        <option value="1week">一周内</option>
-                                        <option value="1month">一月内</option>
-                                        <option value="3months">三月内</option>
-                                        <option value="research">仅调研</option>
-                                    </select>
-                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
-                                </div>
-                            </div>
-
+            {/* Right Form Area */}
+            <div className="w-full md:w-7/12 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 md:p-8 max-h-[80vh] overflow-y-auto scrollbar-hide shadow-2xl">
+                {!submitted ? (
+                    <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                             {/* Name */}
                             <div className="space-y-1">
-                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">咨询类型</label>
-                                <div className="flex gap-2">
-                                    {['企业定制 (B2B)', '个人 IP (B2C)', '代理加盟'].map((type) => (
-                                        <button
-                                            key={type}
-                                            type="button"
-                                            onClick={() => setFormData(prev => ({ ...prev, type }))}
-                                            className={`flex-1 py-2 rounded-lg text-xs md:text-sm border transition-all ${
-                                                formData.type === type 
-                                                ? 'bg-electricBlue/20 border-electricBlue text-electricBlue font-bold' 
-                                                : 'bg-darkBg/30 border-white/5 text-gray-500 hover:bg-white/5'
-                                            }`}
-                                        >
-                                            {type}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="text-xs font-mono text-gray-500 uppercase ml-1">需求描述</label>
+                                <label className="text-xs text-gray-400 ml-1">姓名 <span className="text-red-500">*</span></label>
                                 <div className="relative">
-                                    <FileText className="absolute left-3 top-3 w-4 h-4 text-gray-500" />
-                                    <textarea 
-                                        name="description"
-                                        value={formData.description}
+                                    <input 
+                                        type="text" 
+                                        name="name"
+                                        value={formData.name}
                                         onChange={handleInputChange}
-                                        rows={2}
-                                        placeholder="请简述您的具体需求或应用场景..." 
-                                        className="w-full bg-darkBg/50 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white text-sm focus:border-electricBlue focus:ring-1 focus:ring-electricBlue focus:outline-none transition-all placeholder:text-gray-600 resize-none" 
+                                        onBlur={handleBlur}
+                                        placeholder="怎么称呼您？"
+                                        className={`w-full bg-black/20 rounded-xl pl-4 pr-10 py-3 text-sm text-white placeholder-gray-600 border focus:outline-none transition-all ${getBorderColor(getFieldStatus('name'))}`}
                                     />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                        {getFieldStatus('name') === 'error' && <AlertCircle className="w-4 h-4 text-red-500" />}
+                                        {getFieldStatus('name') === 'success' && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                                        {getFieldStatus('name') === 'default' && <User className="w-4 h-4 text-gray-600" />}
+                                    </div>
+                                </div>
+                                {errors.name && <p className="text-[10px] text-red-500 ml-1">{errors.name}</p>}
+                            </div>
+
+                             {/* Phone */}
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-400 ml-1">电话 <span className="text-red-500">*</span></label>
+                                <div className="relative">
+                                    <input 
+                                        type="tel" 
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        onBlur={handleBlur}
+                                        placeholder="您的联系方式"
+                                        className={`w-full bg-black/20 rounded-xl pl-4 pr-10 py-3 text-sm text-white placeholder-gray-600 border focus:outline-none transition-all ${getBorderColor(getFieldStatus('phone'))}`}
+                                    />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                        {getFieldStatus('phone') === 'error' && <AlertCircle className="w-4 h-4 text-red-500" />}
+                                        {getFieldStatus('phone') === 'success' && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                                        {getFieldStatus('phone') === 'default' && <Phone className="w-4 h-4 text-gray-600" />}
+                                    </div>
+                                </div>
+                                {errors.phone && <p className="text-[10px] text-red-500 ml-1">{errors.phone}</p>}
+                            </div>
+                        </div>
+
+                        {/* Company & Industry */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-400 ml-1">公司 <span className="text-gray-600">(选填)</span></label>
+                                <div className="relative">
+                                    <input 
+                                        type="text" 
+                                        name="company"
+                                        value={formData.company}
+                                        onChange={handleInputChange}
+                                        onBlur={handleBlur}
+                                        placeholder="所在企业名称"
+                                        className={`w-full bg-black/20 rounded-xl pl-4 pr-10 py-3 text-sm text-white placeholder-gray-600 border focus:outline-none transition-all ${getBorderColor(getFieldStatus('company'))}`}
+                                    />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                        <Building className="w-4 h-4 text-gray-600" />
+                                    </div>
                                 </div>
                             </div>
-
-                            <motion.button 
-                                type="submit" 
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="w-full py-4 bg-gradient-to-r from-electricBlue to-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-900/30 hover:shadow-blue-900/50 transition-all flex items-center justify-center gap-2 group mt-2"
-                            >
-                                <span>提交预约申请</span>
-                                <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </motion.button>
-                        </form>
-                    ) : (
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-8"
-                        >
-                            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mb-6">
-                                <CheckCircle2 className="w-10 h-10 text-green-500" />
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-400 ml-1">行业 <span className="text-gray-600">(选填)</span></label>
+                                <div className="relative">
+                                    <select 
+                                        name="industry"
+                                        value={formData.industry}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                    >
+                                        <option value="" disabled>选择行业...</option>
+                                        <option value="ecommerce">电商直播</option>
+                                        <option value="tourism">文旅宣传</option>
+                                        <option value="education">教育培训</option>
+                                        <option value="government">政务服务</option>
+                                        <option value="other">其他</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
+                                </div>
                             </div>
-                            <h3 className="text-2xl font-bold text-white mb-2">提交成功</h3>
-                            <p className="text-gray-400">
-                                感谢您的预约。我们的解决方案专家将在 24 小时内与您联系 ({formData.phone})，请保持电话畅通。
-                            </p>
-                            <button onClick={() => setSubmitted(false)} className="mt-8 text-sm text-electricBlue hover:underline">
-                                返回表单
-                            </button>
-                        </motion.div>
-                    )}
-                </div>
-            </div>
+                        </div>
+                        
+                         {/* Job Title & Budget */}
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-400 ml-1">职位 <span className="text-gray-600">(选填)</span></label>
+                                <input 
+                                    type="text" 
+                                    name="jobTitle"
+                                    value={formData.jobTitle}
+                                    onChange={handleInputChange}
+                                    placeholder="您的职位"
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-400 ml-1">预算 <span className="text-gray-600">(选填)</span></label>
+                                <div className="relative">
+                                    <select 
+                                        name="budget"
+                                        value={formData.budget}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:border-electricBlue focus:outline-none transition-all appearance-none cursor-pointer text-gray-300"
+                                    >
+                                        <option value="" disabled>选择预算...</option>
+                                        <option value="<5w">5万以内</option>
+                                        <option value="5-20w">5-20万</option>
+                                        <option value="20-50w">20-50万</option>
+                                        <option value=">50w">50万以上</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" />
+                                </div>
+                            </div>
+                        </div>
 
-            {/* Mobile Contact Info (Visible only on mobile) */}
-            <div className="md:hidden flex gap-6 text-gray-500 text-sm mt-4 pb-8">
-                <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    contact@gansu-ai.com
-                </div>
-            </div>
-            
-            <div className="absolute bottom-2 left-0 right-0 text-center text-[10px] text-gray-800 pointer-events-none">
-                © 2024 Gansu AI Digital Human Solution.
+                        {/* Type Selection */}
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-400 ml-1">咨询类型</label>
+                            <div className="flex gap-2">
+                                {['企业定制 (B2B)', '个人 IP (B2C)', '渠道代理'].map((type) => (
+                                    <button
+                                        key={type}
+                                        type="button"
+                                        onClick={() => setFormData(prev => ({ ...prev, type }))}
+                                        className={`flex-1 py-2 rounded-lg text-xs md:text-sm border transition-all ${
+                                            formData.type === type 
+                                            ? 'bg-electricBlue/20 border-electricBlue text-electricBlue font-bold' 
+                                            : 'bg-black/20 border-white/5 text-gray-500 hover:bg-white/5'
+                                        }`}
+                                    >
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                         {/* Description */}
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-400 ml-1">需求描述</label>
+                            <div className="relative">
+                                <textarea 
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    onBlur={handleBlur}
+                                    rows={2}
+                                    placeholder="简单描述您的应用场景或需求..."
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none transition-all resize-none"
+                                />
+                            </div>
+                        </div>
+
+                        <button 
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full py-4 bg-gradient-to-r from-electricBlue to-blue-600 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(41,121,255,0.3)] hover:shadow-[0_0_30px_rgba(41,121,255,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {isSubmitting ? (
+                                <><Loader2 className="w-5 h-5 animate-spin" /> 提交中...</>
+                            ) : (
+                                <><Send className="w-5 h-5" /> 立即预约咨询</>
+                            )}
+                        </button>
+                    </form>
+                ) : (
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="h-full min-h-[400px] flex flex-col items-center justify-center text-center space-y-6"
+                    >
+                        <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
+                            <CheckCircle2 className="w-10 h-10 text-green-500" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-white mb-2">提交成功</h3>
+                            <p className="text-gray-400 max-w-xs mx-auto text-sm">
+                                感谢您的信任。数据已录入后台系统，解决方案专家将在 24 小时内与您取得联系。
+                            </p>
+                        </div>
+                        <button 
+                            onClick={() => setSubmitted(false)}
+                            className="px-6 py-2 border border-white/20 rounded-full text-sm text-gray-300 hover:bg-white/5 transition-colors"
+                        >
+                            返回表单
+                        </button>
+                    </motion.div>
+                )}
             </div>
         </div>
+        
+        {/* Footer Bottom Line */}
+        <div className="absolute bottom-4 w-full flex justify-center items-center gap-2 text-[10px] text-gray-700">
+             © 2024 Gansu AI Digital Human Solution. All Rights Reserved.
+             <button 
+                onClick={() => setShowAdmin(true)} 
+                className="opacity-20 hover:opacity-100 transition-opacity p-1 text-gray-500 hover:text-white"
+                title="Admin Access"
+             >
+                 <Lock className="w-3 h-3" />
+             </button>
+        </div>
+
+        {/* Admin Panel Modal */}
+        <AdminPanel isOpen={showAdmin} onClose={() => setShowAdmin(false)} />
     </section>
   );
+};
+
+// --- Admin Panel Component ---
+
+const AdminPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+    const [leads, setLeads] = useState<any[]>([]);
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            const data = JSON.parse(localStorage.getItem('gansu_ai_leads') || '[]');
+            setLeads(data);
+        }
+    }, [isOpen]);
+
+    const handleDownloadCSV = () => {
+        if (leads.length === 0) return;
+        
+        // CSV Header
+        const headers = ["ID", "Time", "Name", "Phone", "Company", "Job", "Industry", "Budget", "Type", "Description"];
+        
+        // CSV Rows
+        const rows = leads.map(lead => [
+            lead.id,
+            `"${lead.timestamp}"`,
+            `"${lead.name}"`,
+            `"${lead.phone}"`,
+            `"${lead.company || ''}"`,
+            `"${lead.jobTitle || ''}"`,
+            `"${lead.industry || ''}"`,
+            `"${lead.budget || ''}"`,
+            `"${lead.type}"`,
+            `"${(lead.description || '').replace(/"/g, '""')}"` // Escape quotes
+        ]);
+
+        const csvContent = [
+            headers.join(','), 
+            ...rows.map(row => row.join(','))
+        ].join('\n');
+
+        // Create Blob and Link
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `leads_export_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleCopyToFlowUs = async () => {
+        if (leads.length === 0) return;
+
+        // Create Markdown Table
+        const headers = ['ID', '时间', '姓名', '电话', '公司', '职位', '行业', '预算', '类型', '需求'];
+        const separator = headers.map(() => '---');
+        
+        const rows = leads.map(lead => [
+            lead.id,
+            lead.timestamp,
+            lead.name,
+            lead.phone,
+            lead.company || '-',
+            lead.jobTitle || '-',
+            lead.industry || '-',
+            lead.budget || '-',
+            lead.type,
+            (lead.description || '-').replace(/\n/g, ' ')
+        ]);
+
+        const markdown = [
+            `| ${headers.join(' | ')} |`,
+            `| ${separator.join(' | ')} |`,
+            ...rows.map(row => `| ${row.join(' | ')} |`)
+        ].join('\n');
+
+        try {
+            await navigator.clipboard.writeText(markdown);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy', err);
+        }
+    };
+
+    const handleClearData = () => {
+        if (window.confirm('Are you sure you want to delete all lead data? This cannot be undone.')) {
+            localStorage.removeItem('gansu_ai_leads');
+            setLeads([]);
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                    />
+                    
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className="relative bg-[#111] border border-white/10 w-full max-w-4xl h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                    >
+                        {/* Header */}
+                        <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center bg-[#151515]">
+                            <div className="flex items-center gap-3">
+                                <Table className="w-5 h-5 text-electricBlue" />
+                                <div>
+                                    <h3 className="text-lg font-bold text-white">Backend Data Manager</h3>
+                                    <p className="text-xs text-gray-500">Local Storage View • {leads.length} Records</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={handleCopyToFlowUs}
+                                    disabled={leads.length === 0}
+                                    className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                    {copied ? 'Copied!' : 'Copy to FlowUs'}
+                                </button>
+                                <button 
+                                    onClick={handleDownloadCSV}
+                                    disabled={leads.length === 0}
+                                    className="px-3 py-1.5 bg-electricBlue/10 hover:bg-electricBlue text-electricBlue hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    <Download className="w-3 h-3" /> Export CSV
+                                </button>
+                                <button 
+                                    onClick={handleClearData}
+                                    disabled={leads.length === 0}
+                                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    <Trash2 className="w-3 h-3" /> Clear
+                                </button>
+                                <button 
+                                    onClick={onClose}
+                                    className="p-1.5 hover:bg-white/10 rounded-lg transition-colors ml-2"
+                                >
+                                    <X className="w-5 h-5 text-gray-400" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Table Content */}
+                        <div className="flex-1 overflow-auto">
+                            {leads.length > 0 ? (
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="bg-white/5 sticky top-0 z-10">
+                                        <tr>
+                                            {['Time', 'Name', 'Phone', 'Company', 'Type', 'Desc'].map(head => (
+                                                <th key={head} className="p-4 text-xs font-mono text-gray-400 uppercase tracking-wider border-b border-white/10">
+                                                    {head}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5">
+                                        {leads.map((lead) => (
+                                            <tr key={lead.id} className="hover:bg-white/5 transition-colors">
+                                                <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{lead.timestamp}</td>
+                                                <td className="p-4 text-sm text-white font-medium">{lead.name}</td>
+                                                <td className="p-4 text-sm text-gray-300">{lead.phone}</td>
+                                                <td className="p-4 text-sm text-gray-400">{lead.company || '-'}</td>
+                                                <td className="p-4 text-xs">
+                                                    <span className={`px-2 py-1 rounded-full border ${
+                                                        lead.type.includes('B2B') ? 'border-blue-500/30 text-blue-400 bg-blue-500/10' :
+                                                        lead.type.includes('B2C') ? 'border-yellow-500/30 text-yellow-400 bg-yellow-500/10' :
+                                                        'border-gray-500/30 text-gray-400'
+                                                    }`}>
+                                                        {lead.type}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-sm text-gray-500 max-w-xs truncate" title={lead.description}>
+                                                    {lead.description || '-'}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div className="h-full flex flex-col items-center justify-center text-gray-500">
+                                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                                        <Table className="w-8 h-8 opacity-20" />
+                                    </div>
+                                    <p>No data submitted yet.</p>
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
 };
 
 export default Footer;

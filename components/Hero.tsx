@@ -70,12 +70,18 @@ const Hero: React.FC = () => {
           
           {/* Floating Image Overlay */}
           <motion.img 
-            src="https://picsum.photos/id/106/500/500" 
+            src="https://picsum.photos/id/106/500/500.webp" 
             alt="Digital Human Abstract"
             className="absolute w-48 h-48 md:w-80 md:h-80 object-cover rounded-2xl grayscale border border-white/20 shadow-2xl z-20"
             initial={{ y: 20 }}
             animate={{ y: -20 }}
             transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+            loading="eager" // Important for LCP
+            decoding="async"
+            width="500"
+            height="500"
+            // @ts-ignore
+            fetchpriority="high"
           />
         </div>
       </div>
