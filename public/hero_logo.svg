@@ -1,0 +1,62 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="512" height="512" fill="#050505"/>
+    <defs>
+        <linearGradient id="grid-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="white" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="white" stop-opacity="0.1"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- 3D Wireframe Structure - Back Layer (Dim) -->
+    <path d="M160 380 L160 160 L256 260 L352 160 L352 380" stroke="white" stroke-width="2" stroke-opacity="0.2" fill="none" stroke-dasharray="4 4"/>
+    
+    <!-- Connecting Depth Lines -->
+    <line x1="120" y1="420" x2="160" y2="380" stroke="white" stroke-width="1" stroke-opacity="0.3" />
+    <line x1="120" y1="120" x2="160" y2="160" stroke="white" stroke-width="1" stroke-opacity="0.3" />
+    <line x1="256" y1="280" x2="256" y2="260" stroke="white" stroke-width="1" stroke-opacity="0.3" />
+    <line x1="392" y1="120" x2="352" y2="160" stroke="white" stroke-width="1" stroke-opacity="0.3" />
+    <line x1="392" y1="420" x2="352" y2="380" stroke="white" stroke-width="1" stroke-opacity="0.3" />
+
+    <!-- Main 3D Shape - Front Layer (Bright) -->
+    <path d="M120 420 L120 120 L256 280 L392 120 L392 420" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    
+    <!-- Internal Tech Grid / Dot Matrix Effect inside the M -->
+    <g fill="white" fill-opacity="0.6">
+       <circle cx="120" cy="180" r="3" />
+       <circle cx="120" cy="240" r="3" />
+       <circle cx="120" cy="300" r="3" />
+       <circle cx="120" cy="360" r="3" />
+       
+       <circle cx="392" cy="180" r="3" />
+       <circle cx="392" cy="240" r="3" />
+       <circle cx="392" cy="300" r="3" />
+       <circle cx="392" cy="360" r="3" />
+
+       <circle cx="165" cy="170" r="2" opacity="0.5"/>
+       <circle cx="210" cy="225" r="2" opacity="0.5"/>
+       <circle cx="300" cy="225" r="2" opacity="0.5"/>
+       <circle cx="347" cy="170" r="2" opacity="0.5"/>
+    </g>
+
+    <!-- Glowing Nodes (Joints) -->
+    <circle cx="120" cy="120" r="8" fill="white" />
+    <circle cx="256" cy="280" r="8" fill="white" />
+    <circle cx="392" cy="120" r="8" fill="white" />
+    <circle cx="120" cy="420" r="8" fill="white" />
+    <circle cx="392" cy="420" r="8" fill="white" />
+
+    <!-- Floating "Cloud" Particles (Random Distribution) -->
+    <g fill="white" fill-opacity="0.3">
+        <circle cx="80" cy="100" r="2" />
+        <circle cx="90" cy="450" r="2" />
+        <circle cx="430" cy="80" r="2" />
+        <circle cx="420" cy="460" r="2" />
+        <circle cx="256" cy="60" r="3" />
+        <circle cx="256" cy="450" r="3" />
+        <circle cx="50" cy="256" r="2" />
+        <circle cx="460" cy="256" r="2" />
+        
+        <rect x="180" y="350" width="4" height="4" opacity="0.4" />
+        <rect x="320" y="350" width="4" height="4" opacity="0.4" />
+    </g>
+</svg>
