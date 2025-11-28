@@ -37,8 +37,8 @@ const rotateX = (p: Point3D, angle: number): Point3D => {
 
 const generateVolumetricPoints = (shape: 'M' | 'HUMAN', count: number): Point3D[] => {
   const points: Point3D[] = [];
-  // Adjusted scale to 1.6 to fit within the container without clipping
-  const scale = 1.6; 
+  // AGGRESSIVE SCALE REDUCTION to 1.3 to ensure it fits perfectly in the container
+  const scale = 1.3; 
 
   if (shape === 'M') {
     // --- Volumetric Letter M ---
@@ -174,7 +174,7 @@ const HoloCore: React.FC = () => {
     const [phase, setPhase] = useState<'M' | 'HUMAN'>('M');
     
     // Increased particle count for better definition
-    const particleCount = 700; 
+    const particleCount = 800; 
     
     const pointsM = useMemo(() => generateVolumetricPoints('M', particleCount), []);
     const pointsHuman = useMemo(() => generateVolumetricPoints('HUMAN', particleCount), []);
@@ -313,7 +313,7 @@ const HoloCore: React.FC = () => {
             
             {/* Tech Labels */}
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-black px-3 py-1 border border-electricBlue/30 rounded-full text-[10px] text-electricBlue font-mono flex items-center gap-2 shadow-[0_0_10px_rgba(41,121,255,0.2)]">
-                <Cpu className="w-3 h-3" /> NEURAL CORE
+                <Cpu className="w-3 h-3" /> NEURAL CORE V4.0
             </div>
             
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4">

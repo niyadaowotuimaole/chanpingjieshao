@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, MapPin, Plane, Building2, GraduationCap, ArrowUpRight } from 'lucide-react';
+import { ShoppingBag, MapPin, Plane, Building2, GraduationCap, ArrowUpRight, ChevronRight } from 'lucide-react';
 import SectionWrapper from './SectionWrapper';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -62,24 +62,54 @@ const B2BSolutions: React.FC = () => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 h-auto md:h-[60vh]">
-        {/* Navigation Tabs */}
-        <div className="w-full md:w-1/4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide shrink-0">
-          {industries.map((item) => (
-            <motion.button
-              key={item.id}
-              onClick={() => setActiveTab(item)}
-              whileHover={{ x: 5, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-              whileTap={{ scale: 0.98 }}
-              className={`flex items-center gap-3 p-3 md:p-4 rounded-xl text-left transition-colors duration-300 min-w-[140px] md:min-w-0 flex-shrink-0 ${
-                activeTab.id === item.id 
-                  ? 'bg-electricBlue text-white shadow-lg shadow-blue-900/20' 
-                  : 'bg-transparent text-gray-500'
-              }`}
-            >
-              {item.icon}
-              <span className="font-semibold text-sm md:text-base">{item.name}</span>
-            </motion.button>
-          ))}
+        {/* Navigation Tabs - Enhanced Interactive List */}
+        <div className="w-full md:w-1/3 flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-y-auto pb-4 md:pb-0 scrollbar-hide shrink-0 snap-x md:pr-2">
+          {industries.map((item) => {
+            const isActive = activeTab.id === item.id;
+            return (
+              <motion.button
+                key={item.id}
+                onClick={() => setActiveTab(item)}
+                whileHover={{ scale: 1.02, x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                className={`
+                  group relative flex items-center gap-4 p-4 rounded-2xl text-left transition-all duration-300 min-w-[200px] md:min-w-0 border snap-start
+                  ${isActive 
+                    ? 'bg-gradient-to-r from-electricBlue to-blue-600 border-electricBlue text-white shadow-[0_0_20px_rgba(41,121,255,0.3)]' 
+                    : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:border-white/20 hover:text-white'
+                  }
+                `}
+              >
+                {/* Icon Box */}
+                <div className={`
+                  p-2.5 rounded-xl transition-colors duration-300 flex-shrink-0
+                  ${isActive 
+                    ? 'bg-white/20 text-white' 
+                    : 'bg-black/20 text-gray-500 group-hover:text-electricBlue group-hover:bg-electricBlue/10'
+                  }
+                `}>
+                  {item.icon}
+                </div>
+
+                {/* Text Info */}
+                <div className="flex-1 min-w-0">
+                  <span className={`block font-bold text-sm md:text-base mb-0.5 ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                    {item.name}
+                  </span>
+                  <span className={`text-[10px] md:text-xs block truncate transition-colors ${isActive ? 'text-blue-100' : 'text-gray-600 group-hover:text-gray-500'}`}>
+                    {isActive ? '当前选择' : '点击查看方案'}
+                  </span>
+                </div>
+
+                {/* Arrow Indicator */}
+                <ChevronRight className={`
+                  w-4 h-4 transition-all duration-300
+                  ${isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-50 group-hover:translate-x-0'}
+                `} />
+                
+              </motion.button>
+            );
+          })}
         </div>
 
         {/* Content Area */}

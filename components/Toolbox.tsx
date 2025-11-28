@@ -34,7 +34,7 @@ const Toolbox: React.FC = () => {
         >
             {/* Click Hint */}
             <div className="absolute top-4 right-4 bg-electricBlue/20 text-electricBlue text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                Try AI Image
+                试一试 AI 绘图
             </div>
 
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
@@ -65,7 +65,7 @@ const Toolbox: React.FC = () => {
         >
             {/* Click Hint */}
             <div className="absolute top-4 right-4 bg-electricBlue/20 text-electricBlue text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                Try Veo
+                试一试 Veo
             </div>
 
             <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-20 group-hover:opacity-100 transition-opacity duration-500">
@@ -126,7 +126,7 @@ const Toolbox: React.FC = () => {
         >
             {/* Click Hint */}
             <div className="absolute top-2 right-2 bg-electricBlue/20 text-electricBlue text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                Try AI Copy
+                试一试 AI 文案
             </div>
 
             {/* Dynamic Background: Multilingual Typography */}
@@ -218,7 +218,7 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
 
         } catch (error: any) {
             console.error("Image Gen Error:", error);
-            alert("Image generation failed. Please try again or check your API key.");
+            alert("图片生成失败。请重试或检查 API Key。");
         } finally {
             setIsGenerating(false);
         }
@@ -251,20 +251,20 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
                         {/* Left: Controls */}
                         <div className="w-full md:w-1/3 p-6 bg-[#151515] border-r border-white/5 flex flex-col gap-5 overflow-y-auto">
                             <div>
-                                <h3 className="text-lg font-bold text-white hidden md:block mb-1">AI Image Gen</h3>
-                                <p className="text-xs text-gray-500 mb-4">Describe it, see it.</p>
+                                <h3 className="text-lg font-bold text-white hidden md:block mb-1">AI 绘画生成</h3>
+                                <p className="text-xs text-gray-500 mb-4">输入描述，即刻生成。</p>
                                 
-                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">Prompt</label>
+                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">提示词 (Prompt)</label>
                                 <textarea 
                                     value={prompt}
                                     onChange={(e) => setPrompt(e.target.value)}
-                                    placeholder="e.g., A futuristic cyberpunk city in Gansu desert..."
+                                    placeholder="例如：甘肃沙漠中的赛博朋克城市..."
                                     className="w-full h-32 bg-black/50 border border-white/10 rounded-xl p-3 text-sm text-white placeholder-gray-600 focus:border-electricBlue focus:outline-none resize-none"
                                 />
                             </div>
 
                             <div>
-                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">Aspect Ratio</label>
+                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">图片比例</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {ratios.map(r => (
                                         <button
@@ -283,7 +283,7 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
                             </div>
 
                             <div>
-                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">Style</label>
+                                <label className="text-xs text-gray-400 font-mono uppercase mb-2 block">艺术风格</label>
                                 <div className="flex flex-wrap gap-2">
                                     {styles.map(s => (
                                         <button
@@ -307,7 +307,7 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
                                 className="mt-auto w-full py-3 bg-gradient-to-r from-electricBlue to-blue-600 rounded-xl text-white font-bold shadow-lg hover:shadow-blue-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-                                {isGenerating ? 'Dreaming...' : 'Generate Image'}
+                                {isGenerating ? '生成中...' : '立即生成'}
                             </button>
                         </div>
 
@@ -325,7 +325,7 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
                                         download={`gansu-ai-gen-${Date.now()}.png`}
                                         className="absolute bottom-4 right-4 bg-white text-black px-4 py-2 rounded-full font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 hover:bg-gray-200"
                                     >
-                                        <Download className="w-4 h-4" /> Download
+                                        <Download className="w-4 h-4" /> 下载图片
                                     </a>
                                 </div>
                             ) : (
@@ -333,7 +333,7 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
                                     <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4 animate-pulse">
                                         <Image className="w-10 h-10 opacity-20" />
                                     </div>
-                                    <p className="text-sm">Your masterpiece will appear here</p>
+                                    <p className="text-sm">您的作品将在这里显示</p>
                                 </div>
                             )}
 
@@ -400,7 +400,7 @@ const CopywritingModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
             setGeneratedText(response.text.trim());
         } catch (error) {
             console.error(error);
-            setGeneratedText("Error generating text. Please check your network or API key.");
+            setGeneratedText("生成失败。请检查网络或 API Key。");
         } finally {
             setIsGenerating(false);
         }
@@ -492,14 +492,14 @@ const CopywritingModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
                         {/* Right: Output Area */}
                         <div className="flex-1 p-6 bg-[#1a1a1a] flex flex-col relative">
                             <div className="flex justify-between items-center mb-4">
-                                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Generated Result</h4>
+                                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider">生成结果</h4>
                                 {generatedText && (
                                     <button 
                                         onClick={handleCopy}
                                         className="text-xs flex items-center gap-1 px-2 py-1 bg-white/5 rounded hover:bg-white/10 text-gray-300 transition-colors"
                                     >
                                         {copied ? <Check className="w-3 h-3 text-green-500"/> : <Copy className="w-3 h-3"/>}
-                                        {copied ? 'Copied' : 'Copy'}
+                                        {copied ? '已复制' : '复制'}
                                     </button>
                                 )}
                             </div>
@@ -512,7 +512,7 @@ const CopywritingModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
                                 ) : (
                                     <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-600 opacity-50">
                                         <Languages className="w-10 h-10 mb-2" />
-                                        <p className="text-xs">Results will appear here</p>
+                                        <p className="text-xs">生成结果将显示在这里</p>
                                     </div>
                                 )}
                             </div>
@@ -568,10 +568,9 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
 
         try {
             setIsGenerating(true);
-            setLoadingStage('Checking API Key...');
+            setLoadingStage('正在检查 API 密钥...');
 
             // 1. Check/Request API Key
-            // We ensure the user has selected a key before proceeding
             try {
                 // @ts-ignore
                 const hasKey = await window.aistudio.hasSelectedApiKey();
@@ -583,23 +582,22 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                 console.warn("AI Studio Key Check failed or skipped:", e);
             }
             
-            setLoadingStage('Initializing Veo Model...');
+            setLoadingStage('正在初始化 Veo 模型...');
 
             // 2. Initialize Client
-            // Always initialize with process.env.API_KEY which is updated after openSelectKey
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
             // 3. Prepare Image Data (strip prefix)
             const base64Data = selectedImage.split(',')[1];
 
-            setLoadingStage('Submitting to Veo-3.1...');
+            setLoadingStage('正在提交至 Veo-3.1...');
 
             // 4. Start Generation
             let operation = await ai.models.generateVideos({
                 model: 'veo-3.1-fast-generate-preview',
                 image: {
                     imageBytes: base64Data,
-                    mimeType: 'image/png', // Simplification: assuming png/jpeg is fine, SDK handles most
+                    mimeType: 'image/png', 
                 },
                 config: {
                     numberOfVideos: 1,
@@ -609,7 +607,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
             });
 
             // 5. Polling Loop
-            setLoadingStage('Dreaming (Generating Video)...');
+            setLoadingStage('正在生成视频 (约1-2分钟)...');
             
             while (!operation.done) {
                 await new Promise(resolve => setTimeout(resolve, 3000)); // Poll every 3s
@@ -629,7 +627,6 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
             console.error("Veo Generation Error:", error);
             
             // Robust check for 404 "Requested entity was not found"
-            // This error indicates the API Key is invalid, expired, or the project lacks access to Veo
             const isEntityNotFoundError = 
                 error.message?.includes("Requested entity was not found") || 
                 error.toString().includes("Requested entity was not found") ||
@@ -637,7 +634,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                 (typeof error === 'object' && JSON.stringify(error).includes("Requested entity was not found"));
 
             if (isEntityNotFoundError) {
-                alert("Authorization failed. Please select a valid Paid API Key to use Veo.");
+                alert("授权失败。请选择有效的付费 API Key 以使用 Veo 功能。");
                 try {
                     // @ts-ignore
                     await window.aistudio.openSelectKey();
@@ -645,7 +642,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                     console.error("Failed to open key selector:", keyError);
                 }
             } else {
-                alert('Generation error: ' + (error.message || 'Unknown error'));
+                alert('生成失败: ' + (error.message || '未知错误'));
             }
         } finally {
             setIsGenerating(false);
@@ -680,8 +677,8 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                     <Video className="w-5 h-5 text-electricBlue" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-white">Veo Animator</h3>
-                                    <p className="text-xs text-gray-400">Image-to-Video Generation</p>
+                                    <h3 className="text-xl font-bold text-white">Veo 视频生成</h3>
+                                    <p className="text-xs text-gray-400">图生视频 (Image-to-Video)</p>
                                 </div>
                             </div>
                             <button 
@@ -705,8 +702,8 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                         <Upload className="w-8 h-8 text-gray-400 group-hover:text-electricBlue" />
                                     </div>
                                     <div className="text-center">
-                                        <p className="text-white font-medium">Click to upload image</p>
-                                        <p className="text-sm text-gray-500">Supports PNG, JPG</p>
+                                        <p className="text-white font-medium">点击上传图片</p>
+                                        <p className="text-sm text-gray-500">支持 PNG, JPG 格式</p>
                                     </div>
                                     <input 
                                         type="file" 
@@ -721,7 +718,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {/* Source Image */}
                                         <div className="space-y-2">
-                                            <div className="text-xs font-mono text-gray-500 uppercase">Source Image</div>
+                                            <div className="text-xs font-mono text-gray-500 uppercase">原图</div>
                                             <div className="relative rounded-xl overflow-hidden border border-white/10 aspect-video bg-black/50">
                                                 <img src={selectedImage} alt="Source" className="w-full h-full object-contain" />
                                                 <button 
@@ -737,7 +734,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                         {/* Output / Preview */}
                                         <div className="space-y-2">
                                             <div className="text-xs font-mono text-gray-500 uppercase">
-                                                {generatedVideoUrl ? 'Generated Result' : 'Preview'}
+                                                {generatedVideoUrl ? '生成结果' : '预览'}
                                             </div>
                                             <div className="relative rounded-xl overflow-hidden border border-white/10 aspect-video bg-black/50 flex items-center justify-center">
                                                 {isGenerating ? (
@@ -758,7 +755,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                                         <div className="w-12 h-12 rounded-full bg-white/5 mx-auto mb-2 flex items-center justify-center">
                                                             <Play className="w-5 h-5 text-gray-600" />
                                                         </div>
-                                                        <p className="text-xs text-gray-500">Video will appear here</p>
+                                                        <p className="text-xs text-gray-500">生成结果将显示在这里</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -769,7 +766,7 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                     {!generatedVideoUrl && !isGenerating && (
                                         <div className="bg-cardBg p-4 rounded-xl border border-white/5 space-y-4">
                                             <div>
-                                                <label className="text-sm text-gray-400 mb-2 block">Aspect Ratio</label>
+                                                <label className="text-sm text-gray-400 mb-2 block">视频比例</label>
                                                 <div className="flex gap-4">
                                                     <button 
                                                         onClick={() => setAspectRatio('16:9')}
@@ -799,11 +796,11 @@ const VeoModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, 
                                                 className="w-full py-3 bg-electricBlue text-white font-bold rounded-lg shadow-lg shadow-blue-900/20 hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
                                             >
                                                 <PenTool className="w-4 h-4" />
-                                                Generate Video
+                                                生成视频
                                             </button>
                                             
                                             <p className="text-[10px] text-center text-gray-500">
-                                                Powered by Google Veo 3.1. Generation may take 1-2 minutes.
+                                                由 Google Veo 3.1 驱动。生成可能需要 1-2 分钟。
                                             </p>
                                         </div>
                                     )}
