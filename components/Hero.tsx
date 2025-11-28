@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { ArrowRight, Cpu, Activity, Zap, Radio } from 'lucide-react';
+import { ArrowRight, Cpu, Activity, Zap, Radio, ScanFace } from 'lucide-react';
 import { motion } from 'framer-motion';
 import SectionWrapper from './SectionWrapper';
 
@@ -9,9 +9,6 @@ interface Point3D {
   x: number;
   y: number;
   z: number;
-  vx?: number; // Velocity for organic movement
-  vy?: number;
-  vz?: number;
 }
 
 // Rotate point around Y axis
@@ -40,77 +37,131 @@ const rotateX = (p: Point3D, angle: number): Point3D => {
 
 const generateVolumetricPoints = (shape: 'M' | 'HUMAN', count: number): Point3D[] => {
   const points: Point3D[] = [];
-  const scale = 1.8; // Scale up the geometry
+  // Adjusted scale to 1.6 to fit within the container without clipping
+  const scale = 1.6; 
 
   if (shape === 'M') {
-    // Volumetric Letter M
-    // Left Leg (-80 to -40)
-    for (let i = 0; i < count * 0.3; i++) {
+    // --- Volumetric Letter M ---
+    const thickness = 20 * scale;
+    
+    // Left Leg
+    for (let i = 0; i < count * 0.25; i++) {
       points.push({
-        x: (-60 + (Math.random() - 0.5) * 20) * scale,
-        y: ((Math.random() - 0.5) * 140) * scale,
-        z: ((Math.random() - 0.5) * 30) * scale
+        x: (-50 + (Math.random() - 0.5) * 15) * scale,
+        y: ((Math.random() - 0.5) * 120) * scale,
+        z: ((Math.random() - 0.5) * thickness)
       });
     }
-    // Right Leg (40 to 80)
-    for (let i = 0; i < count * 0.3; i++) {
+    // Right Leg
+    for (let i = 0; i < count * 0.25; i++) {
       points.push({
-        x: (60 + (Math.random() - 0.5) * 20) * scale,
-        y: ((Math.random() - 0.5) * 140) * scale,
-        z: ((Math.random() - 0.5) * 30) * scale
+        x: (50 + (Math.random() - 0.5) * 15) * scale,
+        y: ((Math.random() - 0.5) * 120) * scale,
+        z: ((Math.random() - 0.5) * thickness)
       });
     }
     // Diagonals
-    for (let i = 0; i < count * 0.4; i++) {
+    for (let i = 0; i < count * 0.5; i++) {
       const t = Math.random(); 
-      // V shape from top (-70) to center (0)
       const side = Math.random() > 0.5 ? 1 : -1;
-      // Start x: +/- 60, End x: 0
-      const startX = side * 60 * scale;
+      const startX = side * 50 * scale;
+      const startY = -60 * scale;
       const endX = 0;
-      const startY = -70 * scale;
-      const endY = 20 * scale; 
+      const endY = 10 * scale; 
       
       points.push({
         x: startX + (endX - startX) * t + (Math.random() - 0.5) * 10,
         y: startY + (endY - startY) * t + (Math.random() - 0.5) * 10,
-        z: ((Math.random() - 0.5) * 30) * scale
+        z: ((Math.random() - 0.5) * thickness)
       });
     }
   } else {
-    // Volumetric Human Bust
-    // Head (Sphere)
-    const headCount = Math.floor(count * 0.35);
-    const headRadius = 35 * scale;
-    const headY = -60 * scale;
-    
+    // --- Volumetric Full Body Human (Clearer Silhouette) ---
+    // Total Height approx 160 units (-75 to +85)
+
+    // 1. Head (Sphere)
+    const headCount = Math.floor(count * 0.15);
+    const headRadius = 12 * scale;
+    const headY = -75 * scale;
     for (let i = 0; i < headCount; i++) {
       const u = Math.random();
       const v = Math.random();
       const theta = 2 * Math.PI * u;
       const phi = Math.acos(2 * v - 1);
-      const r = headRadius * Math.cbrt(Math.random()); // Even distribution inside sphere
+      const r = headRadius * Math.cbrt(Math.random()); 
       points.push({
         x: r * Math.sin(phi) * Math.cos(theta),
         y: headY + r * Math.sin(phi) * Math.sin(theta),
-        z: r * Math.cos(phi) * 0.8 // Slightly flattened head
+        z: r * Math.cos(phi)
       });
     }
 
-    // Torso (Paraboloid / Cylinder)
-    const torsoCount = count - headCount;
+    // 2. Torso (Tapered Block)
+    const torsoCount = Math.floor(count * 0.30);
     for (let i = 0; i < torsoCount; i++) {
-      const h = Math.random(); // 0 to 1 (top to bottom)
-      const y = (-25 + h * 100) * scale;
-      const radiusAtY = (20 + h * 40) * scale; // Wider at bottom (shoulders)
-      const angle = Math.random() * Math.PI * 2;
-      const r = radiusAtY * Math.sqrt(Math.random());
+      const h = Math.random(); // 0(shoulder) to 1(waist)
+      const y = (-60 + h * 55) * scale; 
+      const w = (18 - h * 6) * scale; // Shoulder width to waist width
+      const d = (8 - h * 2) * scale; // Depth
       
       points.push({
-        x: r * Math.cos(angle),
+        x: (Math.random() - 0.5) * 2 * w,
         y: y,
-        z: r * Math.sin(angle) * 0.5 // Flattened body depth
+        z: (Math.random() - 0.5) * 2 * d
       });
+    }
+
+    // 3. Arms (Relaxed A-Pose)
+    const armCount = Math.floor(count * 0.20);
+    for(let i=0; i<armCount; i++) {
+        const isLeft = i % 2 === 0;
+        const h = Math.random(); // 0(shoulder) to 1(hand)
+        const startY = -55 * scale;
+        const endY = 0 * scale;
+        
+        const startX = (isLeft ? -22 : 22) * scale;
+        const endX = (isLeft ? -35 : 35) * scale; // Hands slightly out
+        
+        const r = 4 * scale; // Arm thickness
+
+        const cx = startX + (endX - startX) * h;
+        const cy = startY + (endY - startY) * h;
+        
+        // Random point inside arm cylinder at height h
+        const angle = Math.random() * Math.PI * 2;
+        const rad = r * Math.sqrt(Math.random());
+
+        points.push({
+            x: cx + rad * Math.cos(angle),
+            y: cy,
+            z: rad * Math.sin(angle)
+        });
+    }
+
+    // 4. Legs (Standing Apart)
+    const legCount = count - headCount - torsoCount - armCount;
+    for(let i=0; i<legCount; i++) {
+        const isLeft = i % 2 === 0;
+        const h = Math.random(); // 0(hip) to 1(foot)
+        const startY = -5 * scale;
+        const endY = 85 * scale;
+        
+        const startX = (isLeft ? -10 : 10) * scale;
+        const endX = (isLeft ? -18 : 18) * scale;
+        
+        const r = 6 * scale * (1 - h * 0.4); // Taper leg
+
+        const cx = startX + (endX - startX) * h;
+        const cy = startY + (endY - startY) * h;
+
+        const angle = Math.random() * Math.PI * 2;
+        const rad = r * Math.sqrt(Math.random());
+
+        points.push({
+             x: cx + rad * Math.cos(angle),
+             y: cy,
+             z: rad * Math.sin(angle)
+        });
     }
   }
   return points;
@@ -122,27 +173,28 @@ const HoloCore: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [phase, setPhase] = useState<'M' | 'HUMAN'>('M');
     
-    const particleCount = 400; // More particles for denser look
+    // Increased particle count for better definition
+    const particleCount = 700; 
     
     const pointsM = useMemo(() => generateVolumetricPoints('M', particleCount), []);
     const pointsHuman = useMemo(() => generateVolumetricPoints('HUMAN', particleCount), []);
     
-    // Animation refs
     const state = useRef({
         rotationY: 0,
         rotationX: 0,
-        morph: 0, // 0 = M, 1 = Human
+        morph: 0, 
         targetMorph: 0
     });
 
     useEffect(() => {
+        // 8 seconds per phase = enough time to rotate > 180 degrees
         const interval = setInterval(() => {
             setPhase(prev => {
                 const next = prev === 'M' ? 'HUMAN' : 'M';
                 state.current.targetMorph = next === 'HUMAN' ? 1 : 0;
                 return next;
             });
-        }, 5000); // 5 seconds per phase
+        }, 8000); 
         return () => clearInterval(interval);
     }, []);
 
@@ -150,7 +202,6 @@ const HoloCore: React.FC = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         
-        // Handle High DPI
         const dpr = window.devicePixelRatio || 1;
         const rect = canvas.getBoundingClientRect();
         canvas.width = rect.width * dpr;
@@ -163,15 +214,15 @@ const HoloCore: React.FC = () => {
         let animationId: number;
         
         const render = () => {
-            // Update Physics
-            state.current.rotationY += 0.3; // Constant rotation
-            state.current.rotationX = Math.sin(Date.now() * 0.001) * 10; // Gentle tilt
+            // Speed: 0.6 deg/frame * 60 fps = 36 deg/sec
+            // 8 seconds * 36 = 288 degrees rotation (satisfies > 180)
+            state.current.rotationY += 0.6; 
+            state.current.rotationX = Math.sin(Date.now() * 0.001) * 5; 
             
-            // Smooth Morphing
+            // Morph Logic
             const diff = state.current.targetMorph - state.current.morph;
-            state.current.morph += diff * 0.03; // Easing
+            state.current.morph += diff * 0.02; 
 
-            // Clear
             ctx.clearRect(0, 0, rect.width, rect.height);
             
             const centerX = rect.width / 2;
@@ -180,22 +231,21 @@ const HoloCore: React.FC = () => {
 
             const projectedPoints: {x:number, y:number, z:number, alpha:number}[] = [];
 
-            // Calculate Points
+            // Compute
             for (let i = 0; i < particleCount; i++) {
                 const pM = pointsM[i];
                 const pH = pointsHuman[i] || {x:0, y:0, z:0};
                 const t = state.current.morph;
 
-                // Interpolate
                 let curr = {
                     x: pM.x + (pH.x - pM.x) * t,
                     y: pM.y + (pH.y - pM.y) * t,
                     z: pM.z + (pH.z - pM.z) * t
                 };
 
-                // Add subtle noise/breathing
+                // Add noise
                 const time = Date.now() * 0.002;
-                const noise = Math.sin(time + i * 0.1) * 2;
+                const noise = Math.sin(time + i * 0.1) * 1.5;
                 curr.x += noise;
                 curr.y += noise;
 
@@ -207,41 +257,43 @@ const HoloCore: React.FC = () => {
                 const scale = fov / (fov + curr.z);
                 const x2d = curr.x * scale + centerX;
                 const y2d = curr.y * scale + centerY;
-                const alpha = Math.max(0.1, Math.min(1, (scale - 0.5) * 1.5)); // Fade distant points
+                const alpha = Math.max(0.1, Math.min(1, (scale - 0.5) * 1.5)); 
 
                 projectedPoints.push({ x: x2d, y: y2d, z: curr.z, alpha });
             }
 
-            // Draw Lines (Neural Connections)
-            // Optimization: Only connect close points or random subset to maintain FPS
+            // Draw Lines (Selective)
             ctx.lineWidth = 0.5;
-            projectedPoints.forEach((p1, i) => {
-                // Only connect every 5th particle to its neighbors to save perf
-                if (i % 5 === 0) { 
-                    for (let j = 1; j < 4; j++) {
-                        const p2 = projectedPoints[(i + j) % particleCount];
-                        const dx = p1.x - p2.x;
-                        const dy = p1.y - p2.y;
-                        const distSq = dx*dx + dy*dy;
-                        
-                        if (distSq < 2500) { // Max distance 50px
-                            const lineAlpha = Math.min(p1.alpha, p2.alpha) * 0.2;
-                            ctx.strokeStyle = `rgba(41, 121, 255, ${lineAlpha})`;
-                            ctx.beginPath();
-                            ctx.moveTo(p1.x, p1.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            ctx.stroke();
-                        }
+            for (let i = 0; i < particleCount; i += 6) { 
+                const p1 = projectedPoints[i];
+                for (let j = 1; j < 3; j++) {
+                    const p2 = projectedPoints[(i + j * 4) % particleCount]; // Random neighbors
+                    const distSq = (p1.x - p2.x)**2 + (p1.y - p2.y)**2;
+                    
+                    if (distSq < 1500) {
+                        const lineAlpha = Math.min(p1.alpha, p2.alpha) * 0.15;
+                        ctx.strokeStyle = `rgba(41, 121, 255, ${lineAlpha})`;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
                     }
                 }
-            });
+            }
 
             // Draw Particles
             projectedPoints.forEach(p => {
-                ctx.fillStyle = `rgba(${state.current.morph > 0.5 ? '41, 121, 255' : '255, 255, 255'}, ${p.alpha})`;
+                // Color Transition: White (M) -> Electric Blue (Human)
+                // R: 255 -> 41, G: 255 -> 121, B: 255 -> 255
+                const r = 255 - (state.current.morph * 214);
+                const g = 255 - (state.current.morph * 134);
+                
+                ctx.fillStyle = `rgba(${r}, ${g}, 255, ${p.alpha})`;
                 ctx.beginPath();
-                const size = state.current.morph > 0.5 ? 1.5 : 1.2;
-                ctx.arc(p.x, p.y, size * (p.z < 0 ? 1.5 : 1), 0, Math.PI * 2);
+                const baseSize = state.current.morph > 0.5 ? 1.4 : 1.1;
+                const size = baseSize * (p.z < 0 ? 1.6 : 0.9); 
+                
+                ctx.arc(p.x, p.y, Math.max(0.5, size), 0, Math.PI * 2);
                 ctx.fill();
             });
 
@@ -255,8 +307,8 @@ const HoloCore: React.FC = () => {
     return (
         <div className="relative w-72 h-72 md:w-96 md:h-96 flex items-center justify-center">
             {/* HUD Rings (CSS Animation) */}
-            <div className="absolute inset-0 border border-electricBlue/20 rounded-full animate-[spin_10s_linear_infinite]" />
-            <div className="absolute inset-8 border border-dashed border-white/10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+            <div className="absolute inset-0 border border-electricBlue/20 rounded-full animate-[spin_12s_linear_infinite]" />
+            <div className="absolute inset-8 border border-dashed border-white/10 rounded-full animate-[spin_20s_linear_infinite_reverse]" />
             <div className="absolute inset-0 bg-electricBlue/5 rounded-full blur-3xl animate-pulse" />
             
             {/* Tech Labels */}
