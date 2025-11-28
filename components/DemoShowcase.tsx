@@ -10,7 +10,7 @@ const demos = [
     subtitle: "任意场景切换",
     desc: "支持背景、前景、语言无缝切换，适应各种场景。",
     poster: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/upload/images/2025-11-27/6928c26317a5f.png",
-    video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/image/LVD6UihYsh.mp4",
+    video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/image/bbpYwoGbzV.mp4",
     tags: ["唇形同步", "超清画质", "随意创作"]
   },
   {

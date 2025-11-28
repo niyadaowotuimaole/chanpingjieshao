@@ -49,8 +49,8 @@ const Toolbox: React.FC = () => {
                     <p className="text-gray-400 text-sm">解决 "不懂设计"。一键生成高质量直播间背景、产品海报、营销素材。</p>
                 </div>
                 <div className="grid grid-cols-2 gap-2 mt-4 pointer-events-none">
-                    <img src="https://picsum.photos/id/16/200/200" className="rounded-lg opacity-50 grayscale hover:grayscale-0 transition-all duration-500 w-full aspect-square object-cover" />
-                    <img src="https://picsum.photos/id/28/200/200" className="rounded-lg opacity-50 grayscale hover:grayscale-0 transition-all duration-500 w-full aspect-square object-cover" />
+                    <img src="https://picsum.photos/id/16/200/200" className="rounded-lg transition-all duration-500 w-full aspect-square object-cover" />
+                    <img src="https://picsum.photos/id/28/200/200" className="rounded-lg transition-all duration-500 w-full aspect-square object-cover" />
                 </div>
             </div>
         </motion.div>
@@ -173,7 +173,14 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
     const ratios = ["1:1", "16:9", "9:16", "4:3", "3:4"];
-    const styles = ["Photorealistic", "Anime", "Cinematic", "3D Render", "Oil Painting"];
+    // Maps english API styles to Chinese UI labels
+    const styles = [
+        { value: "Photorealistic", label: "写实风格" },
+        { value: "Anime", label: "二次元" },
+        { value: "Cinematic", label: "电影感" },
+        { value: "3D Render", label: "3D 渲染" },
+        { value: "Oil Painting", label: "油画风格" }
+    ];
 
     const handleGenerate = async () => {
         if (!prompt.trim()) return;
@@ -287,15 +294,15 @@ const ImageGenModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isO
                                 <div className="flex flex-wrap gap-2">
                                     {styles.map(s => (
                                         <button
-                                            key={s}
-                                            onClick={() => setStyle(s)}
+                                            key={s.value}
+                                            onClick={() => setStyle(s.value)}
                                             className={`py-1.5 px-3 text-xs rounded-full border transition-all ${
-                                                style === s 
+                                                style === s.value
                                                 ? 'bg-white text-black border-white font-bold' 
                                                 : 'bg-transparent text-gray-400 border-white/20 hover:border-white/50'
                                             }`}
                                         >
-                                            {s}
+                                            {s.label}
                                         </button>
                                     ))}
                                 </div>
