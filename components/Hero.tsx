@@ -4,6 +4,13 @@ import { motion } from 'framer-motion';
 import SectionWrapper from './SectionWrapper';
 
 const Hero: React.FC = () => {
+  const scrollToSolutions = () => {
+    const element = document.getElementById('solutions');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <SectionWrapper className="bg-darkBg">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center h-full md:h-auto min-h-[500px]">
@@ -30,6 +37,7 @@ const Hero: React.FC = () => {
           </motion.div>
 
           <motion.button
+            onClick={scrollToSolutions}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="group flex items-center gap-3 px-8 py-4 bg-electricBlue text-white font-semibold rounded-full hover:bg-blue-600 transition-all shadow-[0_0_20px_rgba(41,121,255,0.3)] mx-auto md:mx-0"

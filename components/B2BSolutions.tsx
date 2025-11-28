@@ -55,7 +55,7 @@ const B2BSolutions: React.FC = () => {
   const [activeTab, setActiveTab] = useState(industries[0]);
 
   return (
-    <SectionWrapper>
+    <SectionWrapper id="solutions">
       <div className="mb-8 md:mb-12 text-center md:text-left">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">行业解决方案 (B2B)</h2>
         <p className="text-textGray text-sm md:text-base">深耕五大场景，赋能实体经济</p>
