@@ -5,21 +5,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const demos = [
   {
-    id: 'live',
-    title: "电商带货实录",
-    subtitle: "E-Commerce Live",
-    desc: "情绪饱满，动作自然，支持 7x24h 自动回复弹幕。",
-    poster: "https://picsum.photos/id/435/800/600.webp",
-    tags: ["实时互动", "商品卡片", "促销话术"]
-  },
-  {
     id: 'news',
     title: "背景前景随意切换",
     subtitle: "任意场景切换",
     desc: "支持背景、前景、语言无缝切换，适应各种场景。",
     poster: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/upload/images/2025-11-27/6928c26317a5f.png",
-    video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/public/clone/2025-11-28/v5JtQS.mp4",
+    video: "https://aiszrk.oss-cn-shanghai.aliyuncs.com/image/LVD6UihYsh.mp4",
     tags: ["唇形同步", "超清画质", "随意创作"]
+  },
+  {
+    id: 'live',
+    title: "电商带货",
+    subtitle: "快速直播",
+    desc: "一键直播，动作自然，支持 7x24h 自动回复弹幕。",
+    poster: "https://picsum.photos/id/435/800/600.webp",
+    tags: ["实时互动", "上千模板", "促销话术"]
   },
   {
     id: 'edu',
